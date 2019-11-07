@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_regist_user_dilog_name">
+
+        <TextView
+            android:id="@+id/text_regist_user_dialog_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name"/>
+        <EditText
+            android:id="@+id/et_regist_user_dialog_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/text_regist_user_dialog_name"
+            android:layout_alignTop="@+id/text_regist_user_dialog_name"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_regist_user_dilog_un1"
+        android:layout_below="@+id/rl_regist_user_dilog_name">
+        <TextView
+            android:id="@+id/text_regist_user_dialog_un1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/un1"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/text_regist_user_dialog_un1"
+            android:layout_alignTop="@+id/text_regist_user_dialog_un1"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_regist_user_dilog_un2"
+        android:layout_below="@id/rl_regist_user_dilog_un1">
+        <TextView
+            android:id="@+id/text_regist_user_dialog_un2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/un2"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toEndOf="@+id/text_regist_user_dialog_un2"
+            android:layout_alignTop="@+id/text_regist_user_dialog_un2"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_comfirm_regist_user_dialog"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_regist_user_dilog_un2"
+        android:text="@string/confirm"/>
+
+    <Button
+        android:id="@+id/btn_cancel_regist_user_dialog"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/rl_regist_user_dilog_un2"/>
+</RelativeLayout>

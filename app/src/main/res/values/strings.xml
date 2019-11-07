@@ -12,4 +12,7 @@
     <string name="photo">拍照</string>
     <string name="gallery">从相册获取</string>
     <string name="by_depository">底库导入</string>
+    <string name="name">姓名</string>
+    <string name="un1">可拓展</string>
+    <string name="un2">可拓展</string>
 </resources>

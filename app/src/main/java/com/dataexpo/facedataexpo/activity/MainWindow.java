@@ -98,7 +98,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         mDialog.setDialogClickListener(this);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.setCancelable(false);
-
     }
 
     private void initView() {

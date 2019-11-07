@@ -19,6 +19,7 @@ import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.Utils.ToastUtils;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.callback.FaceDetectCallBack;
+import com.dataexpo.facedataexpo.callback.FaceFeatureCallBack;
 import com.dataexpo.facedataexpo.db.DBManager;
 import com.dataexpo.facedataexpo.listener.SdkInitListener;
 import com.dataexpo.facedataexpo.model.GlobalSet;
@@ -451,6 +452,36 @@ public class FaceSDKManager {
             livenessModel.setCheckDuration(System.currentTimeMillis() - startFeature);
             LogUtils.e(TIME_TAG, "feature search time = " + livenessModel.getCheckDuration());
         }
+    }
+
+    /**
+     * 单独调用 特征提取
+     *
+     * @param imageInstance       可见光底层送检对象
+     * @param landmark            检测眼睛，嘴巴，鼻子，72个关键点
+     * @param featureCheckMode    特征提取模式
+     * @param faceFeatureCallBack 回掉方法
+     */
+    public void onFeatureCheck(BDFaceImageInstance imageInstance, float[] landmark,
+                               BDFaceSDKCommon.FeatureType featureCheckMode,
+                               final FaceFeatureCallBack faceFeatureCallBack) {
+
+        BDFaceImageInstance rgbInstance = new BDFaceImageInstance(imageInstance.data,
+                imageInstance.height, imageInstance.width,
+                imageInstance.imageType, 0, 0);
+
+        byte[] feature = new byte[512];
+        float featureSize = FaceSDKManager.getInstance().getFaceFeature().feature(
+                featureCheckMode, rgbInstance, landmark, feature);
+        if (featureSize == FEATURE_SIZE / 4) {
+            // 特征提取成功
+            if (faceFeatureCallBack != null) {
+                faceFeatureCallBack.onFaceFeatureCallBack(featureSize, feature);
+            }
+
+        }
+        // 流程结束销毁图片
+        rgbInstance.destory();
     }
 
     /**

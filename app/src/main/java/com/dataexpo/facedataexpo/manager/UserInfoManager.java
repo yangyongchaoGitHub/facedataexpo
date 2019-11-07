@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 
 public class UserInfoManager {
     private static final String TAG = UserInfoManager.class.getSimpleName();
+    public static final int NAME_EXIST = 0;
+    public static final int NAME_NULL = 1;
     private ExecutorService mExecutorService = null;
 
     // 私有构造
@@ -196,6 +198,14 @@ public class UserInfoManager {
                 listener.userListDeleteSuccess();
             }
         });
+    }
+
+    public int checkNameExist(String name) {
+        List<User> listUsers = FaceApi.getInstance().getUserListByUserName("default", name);
+        if (listUsers != null && listUsers.size() > 0) {
+            return NAME_EXIST;
+        }
+        return NAME_NULL;
     }
 
     /**

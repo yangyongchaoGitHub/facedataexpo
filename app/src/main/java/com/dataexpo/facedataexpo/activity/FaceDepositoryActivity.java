@@ -48,7 +48,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_depository);
         initView();
-        initData();
+
         mContext = this;
     }
 
@@ -65,6 +65,12 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
+
+    @Override
     public void onItemClick(View view, int position) {
 
     }
@@ -76,11 +82,11 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
 
 
     private void initData() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            mGroupId = intent.getStringExtra("group_id");
-            //mTextGroupName.setText("组：" + mGroupId);
-        }
+//        Intent intent = getIntent();
+//        if (intent != null) {
+//            mGroupId = intent.getStringExtra("group_id");
+//            //mTextGroupName.setText("组：" + mGroupId);
+//        }
 
         mGroupId = "default";
 
