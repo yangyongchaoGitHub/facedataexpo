@@ -30,6 +30,7 @@ public class FaceRegistActivity extends BaseActivity implements View.OnClickList
                 startActivity(new Intent(this, PhotoRegistActivity.class));
                 break;
             case R.id.btn_regist_by_gallery:
+                startActivity(new Intent(this, GallerySelectRegistActivity.class));
                 break;
             case R.id.btn_regist_by_depository:
                 break;

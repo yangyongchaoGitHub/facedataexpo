@@ -39,5 +39,6 @@
         <activity android:name=".activity.FaceDepositoryActivity"/>
         <activity android:name=".activity.FaceRegistActivity"/>
         <activity android:name=".activity.PhotoRegistActivity"/>
+        <activity android:name=".activity.GallerySelectRegistActivity"/>
     </application>
 </manifest>

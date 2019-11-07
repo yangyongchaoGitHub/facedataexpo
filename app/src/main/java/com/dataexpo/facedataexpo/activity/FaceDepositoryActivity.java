@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -99,6 +100,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private void initView() {
         recyclerView = findViewById(R.id.user_info_recyclerview);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
+        //RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 4);
         recyclerView.setLayoutManager(layoutManager);
 
         mFaceUserAdapter = new FaceUserAdapter();
@@ -106,7 +108,6 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         mFaceUserAdapter.setItemClickListener(this);
         findViewById(R.id.btn_add).setOnClickListener(this);
     }
-
 
     private void updateDeleteUI(boolean needDelete) {
         if (needDelete) {
