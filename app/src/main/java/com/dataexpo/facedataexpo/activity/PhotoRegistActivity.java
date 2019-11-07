@@ -38,7 +38,6 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_photo_regist);
         initView();
         mLiveType = SingleBaseConfig.getBaseConfig().getType();
-
     }
 
     @Override
