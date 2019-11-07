@@ -18,6 +18,24 @@
             android:layout_height="match_parent"
             android:id="@+id/btn_cat_photo"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:id="@+id/rl_photo_censor"
+            android:visibility="invisible">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_regist_cancel"
+                android:text="@string/cancel"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:id="@+id/btn_regist_ok"
+                android:text="@string/confirm"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 </RelativeLayout>

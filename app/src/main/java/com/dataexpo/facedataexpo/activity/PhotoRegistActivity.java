@@ -3,6 +3,8 @@ package com.dataexpo.facedataexpo.activity;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.Utils.LogUtils;
@@ -29,6 +31,10 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
     private AutoTexturePreviewView mAutoCameraPreviewView;
     private int mLiveType;
     private byte[] regist_image;
+    private RelativeLayout rl_photo_sensor;
+    private Button btn_cancel;
+    private Button btn_confirm;
+    private Button btn_cat_photo;
 
     private int in_get_image = INIT;
 
@@ -45,6 +51,46 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
         super.onResume();
         startTestCloseDebugRegisterFunction();
         in_get_image = IN_CAMERA;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cat_photo:
+                LogUtils.i(TAG, "cat_photo!!");
+                in_get_image = IN_PHOTO;
+                CameraPreviewManager.getInstance().stopPreview();
+                rl_photo_sensor.setVisibility(View.VISIBLE);
+                btn_cat_photo.setVisibility(View.INVISIBLE);
+                break;
+
+            case R.id.btn_regist_cancel:
+                LogUtils.i(TAG, "restart camera!!!!!!");
+                //startTestCloseDebugRegisterFunction();
+                //in_get_image = IN_CAMERA;
+//                onResume();
+//                btn_cat_photo.setVisibility(View.VISIBLE);
+//                rl_photo_sensor.setVisibility(View.INVISIBLE);
+//                mAutoCameraPreviewView.invalidate();
+                finish();
+                break;
+
+            case R.id.btn_regist_ok:
+                finish();
+                break;
+            default:
+        }
+    }
+
+    private void initView() {
+        mAutoCameraPreviewView = findViewById(R.id.auto_camera_preview_view);
+        mAutoCameraPreviewView.setVisibility(View.VISIBLE);
+        btn_cat_photo = findViewById(R.id.btn_cat_photo);
+        btn_cat_photo.setOnClickListener(this);
+
+        findViewById(R.id.btn_regist_cancel).setOnClickListener(this);
+        findViewById(R.id.btn_regist_ok).setOnClickListener(this);
+        rl_photo_sensor = findViewById(R.id.rl_photo_censor);
     }
 
     private void startTestCloseDebugRegisterFunction() {
@@ -79,23 +125,5 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
 //                                });
                     }
                 });
-    }
-
-    private void initView() {
-        mAutoCameraPreviewView = findViewById(R.id.auto_camera_preview_view);
-        mAutoCameraPreviewView.setVisibility(View.VISIBLE);
-        findViewById(R.id.btn_cat_photo).setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_cat_photo:
-                LogUtils.i(TAG, "cat_photo!!");
-                in_get_image = IN_PHOTO;
-                CameraPreviewManager.getInstance().stopPreview();
-                break;
-                default:
-        }
     }
 }
