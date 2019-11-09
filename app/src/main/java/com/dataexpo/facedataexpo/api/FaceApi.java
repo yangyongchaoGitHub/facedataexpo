@@ -1,12 +1,18 @@
 package com.dataexpo.facedataexpo.api;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.baidu.idl.main.facesdk.FaceInfo;
 import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
 import com.baidu.idl.main.facesdk.model.BDFaceSDKCommon;
 import com.baidu.idl.main.facesdk.model.Feature;
+import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.db.DBManager;
 import com.dataexpo.facedataexpo.manager.FaceSDKManager;
 import com.dataexpo.facedataexpo.model.Group;
@@ -22,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FaceApi {
+    private static final String TAG = FaceApi.class.getSimpleName();
     private static FaceApi instance;
     private ExecutorService es = Executors.newSingleThreadExecutor();
     private Future future;
@@ -318,5 +325,29 @@ public class FaceApi {
                 isinitSuccess = true;
             }
         });
+    }
+
+    //获取所有图片
+    public List getAllPics(Context context) {
+        List<String> list = new ArrayList<>();
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        //Cursor cursor = contentResolver.query(Uri.parse("/storage/emulated/0/DCIM/Camera"),
+                new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA},
+                MediaStore.Images.Media.MIME_TYPE + "=? or " +
+                        MediaStore.Images.Media.MIME_TYPE + "=?",
+                new String[]{"image/jpeg", "image/png"},
+                MediaStore.Images.Media._ID + " DESC");
+
+        if (cursor != null){
+            while (cursor.moveToNext()) {
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                list.add(path);
+
+                LogUtils.i(TAG, "path is:" + path);
+            }
+            cursor.close();
+        }
+        return list;
     }
 }

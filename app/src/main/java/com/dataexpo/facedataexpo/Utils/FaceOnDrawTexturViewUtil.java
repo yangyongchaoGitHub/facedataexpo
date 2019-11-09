@@ -30,6 +30,11 @@ public class FaceOnDrawTexturViewUtil {
         rect.left = (int) ((faceInfo.centerX - faceInfo.width / 2));
         rect.right = (int) ((faceInfo.centerX + faceInfo.width / 2));
         rect.bottom = (int) ((faceInfo.centerY + faceInfo.width / 2));
+
+        LogUtils.i("DrawFrame top", rect.top + "");
+        LogUtils.i("DrawFrame left", rect.left + "");
+        LogUtils.i("DrawFrame right", rect.right + "");
+        LogUtils.i("DrawFrame bottom", rect.bottom + "");
         return rect;
     }
 
@@ -39,7 +44,7 @@ public class FaceOnDrawTexturViewUtil {
         int selfWidth = autoTexturePreviewView.getPreviewWidth();
         int selfHeight = autoTexturePreviewView.getPreviewHeight();
         Matrix matrix = new Matrix();
-        if (selfWidth * imageFrame.height > selfHeight * imageFrame.width) {
+        if (selfWidth * imageFrame.height < selfHeight * imageFrame.width) {
             int targetHeight = imageFrame.height * selfWidth / imageFrame.width;
             int delta = (targetHeight - selfHeight) / 2;
             float ratio = 1.0f * selfWidth / imageFrame.width;

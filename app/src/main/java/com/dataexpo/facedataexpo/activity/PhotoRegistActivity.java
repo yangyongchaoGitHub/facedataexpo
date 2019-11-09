@@ -43,8 +43,8 @@ import static com.dataexpo.facedataexpo.manager.UserInfoManager.NAME_NULL;
 
 public class PhotoRegistActivity extends BaseActivity implements View.OnClickListener, LoginDialog.OnDialogClickListener {
     // 图片越大，性能消耗越大，也可以选择640*480， 1280*720
-    private static final int PREFER_WIDTH = 640;
-    private static final int PERFER_HEIGH = 480;
+    private static final int PREFER_WIDTH = 1024;
+    private static final int PERFER_HEIGH = 600;
 
     private static final int INIT = 0;
     private static final int IN_CAMERA = 1;
@@ -273,7 +273,7 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
 
     private void startTestCloseDebugRegisterFunction() {
         // TODO ： 临时放置
-        CameraPreviewManager.getInstance().setCameraFacing(CameraPreviewManager.CAMERA_FACING_FRONT);
+        CameraPreviewManager.getInstance().setCameraFacing(CameraPreviewManager.CAMERA_USB);
         CameraPreviewManager.getInstance().startPreview(this, mAutoCameraPreviewView,
                 PREFER_WIDTH, PERFER_HEIGH, new CameraDataCallback() {
                     @Override

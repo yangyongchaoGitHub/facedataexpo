@@ -100,9 +100,9 @@ public class FaceSDKManager {
         PreferencesUtil.initPrefs(context.getApplicationContext());
         final String licenseOfflineKey = PreferencesUtil.getString("activate_offline_key", "");
         //在MI8上
-        final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "HPYX-AEQ9-PGNU-GQTA");
+        //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "HPYX-AEQ9-PGNU-GQTA");
         //在开发板上
-        //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
+        final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
         //开发板原有的key    3PSM-KOHY-AQLG-BBWI
         //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "3PSM-KOHY-AQLG-BBWI");
 

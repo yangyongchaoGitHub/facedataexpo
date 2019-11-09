@@ -9,14 +9,14 @@ public class BaseConfig {
     private Boolean isNirOrDepth = true;
     // 默认为false。可选项为"true"、"false"，是否开启调试显示，将会作用到所有视频流识别页面，包含1：N、1：1采集人脸图片环节。
     private boolean debug = true;
-    // 默认为0。可传入0、90、180、270四个选项。
-    private int videoDirection = 0;
+    // 默认为0。可传入0、90、180、270四个选项。  摄像头回显角度
+    private int videoDirection = 90;
     // 默认为wireframe。可选项为"wireframe"、"fixed_area"，如选择fixed_area，需要传入半径，px像素为单位
     private String detectFrame = "wireframe";
     // 当选择fixed_area，需要传入半径信息，以px为单位，如50px
 //    private int radius = 50;
-    // 默认为0。可传入0、90、180、270四个选项
-    private int detectDirection = 0;
+    // 默认为0。可传入0、90、180、270四个选项 人脸检测角度
+    private int detectDirection = 90;
     // 默认为max。分为"max"、"first"、"none"三个方式，分别是最大人脸、第一个追踪到的人脸，和不检测人脸
     private String trackType = "max";
     // 默认为80px。可传入大于50px的数值，小于此大小的人脸不予检测

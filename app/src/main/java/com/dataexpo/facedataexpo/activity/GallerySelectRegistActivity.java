@@ -22,6 +22,7 @@ import com.dataexpo.facedataexpo.Utils.FileUtils;
 import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.listener.OnItemClickListener;
 import com.dataexpo.facedataexpo.model.ImageSrc;
 
@@ -62,31 +63,16 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
     }
 
     private void initData() {
+        List<String> pics;
+        pics = FaceApi.getInstance().getAllPics(this);
+        int size = pics.size();
         List<ImageSrc> images = new ArrayList<>();
-        ImageSrc i1 = new ImageSrc();
-        i1.setImageSrcId(R.mipmap.icon_face_);
-        ImageSrc i2 = new ImageSrc();
-        i2.setImageSrcId(R.mipmap.icon_face_);
-        ImageSrc i3 = new ImageSrc();
-        i3.setImageSrcId(R.mipmap.icon_face_);
-        ImageSrc i4 = new ImageSrc();
-        i4.setImageSrcId(R.mipmap.icon_face_);
-        ImageSrc i5 = new ImageSrc();
-        i5.setImageSrcId(R.mipmap.icon_face_);
-        ImageSrc i6 = new ImageSrc();
-        i6.setImageSrcId(R.mipmap.icon_face_);
-        i1.setUri("/sdcard/101.jpg");
-        i2.setUri("/sdcard/101.jpg");
-        i3.setUri("/sdcard/101.jpg");
-        i4.setUri("/sdcard/101.jpg");
-        i5.setUri("/sdcard/101.jpg");
-        i6.setUri("/sdcard/101.jpg");
-        images.add(i1);
-        images.add(i2);
-        images.add(i3);
-        images.add(i4);
-        images.add(i5);
-        images.add(i6);
+
+        for (int i = 0; i < size; i++) {
+            ImageSrc is = new ImageSrc();
+            is.setUri(pics.get(i));
+            images.add(is);
+        }
         mImageAdapter.setDataList(images);
         mImageAdapter.notifyDataSetChanged();
     }

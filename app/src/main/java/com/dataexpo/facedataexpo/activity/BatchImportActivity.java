@@ -4,5 +4,4 @@ import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 
 public class BatchImportActivity extends BaseActivity {
 
-
 }

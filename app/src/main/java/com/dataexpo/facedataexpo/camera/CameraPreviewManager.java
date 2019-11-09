@@ -169,11 +169,9 @@ public class CameraPreviewManager implements TextureView.SurfaceTextureListener 
             } catch (Exception e) {
                 Log.e("qing", "camera destory error");
                 e.printStackTrace();
-
             }
         }
     }
-
 
     /**
      * 开启摄像头
@@ -216,7 +214,6 @@ public class CameraPreviewManager implements TextureView.SurfaceTextureListener 
                     break;
 
             }
-
 
             if (cameraRotation == 90 || cameraRotation == 270) {
                 boolean isRgbRevert = SingleBaseConfig.getBaseConfig().getRgbRevert();
