@@ -190,8 +190,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
                 @Override
                 public void initModelSuccess() {
-                    ToastUtils.toast(mContext, "搜索中，请稍后----  ------  ---");
-                    ImportFileManager.getInstance().batchImport();
+
                 }
 
                 @Override

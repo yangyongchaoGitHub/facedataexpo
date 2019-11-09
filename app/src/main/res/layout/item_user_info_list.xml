@@ -14,10 +14,12 @@
         android:checked="false"
         android:clickable="false"
         android:focusable="false"
-        android:focusableInTouchMode="false"/>
+        android:focusableInTouchMode="false"
+        android:background="@drawable/checkbox_selector"/>
 
     <com.dataexpo.facedataexpo.view.CircleImageView
         android:id="@+id/user_info_image"
+        android:layout_toRightOf="@id/check_btn"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginLeft="15dp"/>

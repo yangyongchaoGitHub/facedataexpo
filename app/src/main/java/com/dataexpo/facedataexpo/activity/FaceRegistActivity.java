@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.dataexpo.facedataexpo.R;
+import com.dataexpo.facedataexpo.Utils.ToastUtils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.manager.ImportFileManager;
 
 public class FaceRegistActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = FaceRegistActivity.class.getSimpleName();
@@ -33,6 +35,8 @@ public class FaceRegistActivity extends BaseActivity implements View.OnClickList
                 startActivity(new Intent(this, GallerySelectRegistActivity.class));
                 break;
             case R.id.btn_regist_by_depository:
+                ToastUtils.toast(this, "搜索中，请稍后----  ------  ---");
+                ImportFileManager.getInstance().batchImport();
                 break;
             default:
         }

@@ -26,13 +26,14 @@ import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.listener.OnItemClickListener;
+import com.dataexpo.facedataexpo.listener.OnItemLongClickListener;
 import com.dataexpo.facedataexpo.manager.UserInfoManager;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 
 import java.util.List;
 
-public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener {
+public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener {
     private static final String TAG = FaceDepositoryActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private Context mContext;
@@ -40,6 +41,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private UserListListener mUserListListener;
     private List<User> mListUserInfo;
     private TextView mTextGroupName;
+    private boolean isShowCheck = false;
 
     private String mGroupId = "";
     private ButtonState mButtonState = ButtonState.BATCH_OPERATION;             // 当前按钮状态
@@ -73,14 +75,26 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
 
     @Override
     public void onItemClick(View view, int position) {
+        LogUtils.i(TAG, "item click: " + position);
 
+        if (position < mListUserInfo.size()) {
+            mListUserInfo.get(position).setChecked(!mListUserInfo.get(position).isChecked());
+        }
+        mFaceUserAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLongItemClick(View view, int position) {
+        isShowCheck = !isShowCheck;
+        mFaceUserAdapter.setShowCheckBox(isShowCheck);
+        LogUtils.i(TAG, "isShowCheck:: " + isShowCheck);
+        mFaceUserAdapter.notifyDataSetChanged();
     }
 
     private enum ButtonState {
         BATCH_OPERATION,
         ALL_SELECT
     }
-
 
     private void initData() {
 //        Intent intent = getIntent();
@@ -106,7 +120,9 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         mFaceUserAdapter = new FaceUserAdapter();
         recyclerView.setAdapter(mFaceUserAdapter);
         mFaceUserAdapter.setItemClickListener(this);
+        mFaceUserAdapter.setOnItemLongClickListener(this);
         findViewById(R.id.btn_add).setOnClickListener(this);
+
     }
 
     private void updateDeleteUI(boolean needDelete) {
@@ -223,6 +239,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         private List<User> mList;
         private boolean mShowCheckBox;
         private OnItemClickListener mItemClickListener;
+        private OnItemLongClickListener mItemLongClickListener;
 
         private void setDataList(List<User> list) {
             mList = list;
@@ -243,6 +260,10 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
             mItemClickListener = itemClickListener;
         }
 
+        private void setOnItemLongClickListener(OnItemLongClickListener itemLongClickListener) {
+            mItemLongClickListener = itemLongClickListener;
+        }
+
         @NonNull
         @Override
         public FaceUserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -254,7 +275,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         }
 
         @Override
-        public void onBindViewHolder(@NonNull FaceUserHolder holder, int position) {
+        public void onBindViewHolder(@NonNull FaceUserHolder holder, final int position) {
             holder.itemView.setTag(position);
             if (mShowCheckBox) {
                 holder.check_btn.setVisibility(View.VISIBLE);
@@ -279,6 +300,18 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
             Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getBatchImportSuccessDirectory()
                     + "/" + mList.get(position).getImageName());
             holder.image.setImageBitmap(bitmap);
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if  (mItemLongClickListener != null) {
+                        mItemLongClickListener.onLongItemClick(v, position);
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
         }
 
         @Override
