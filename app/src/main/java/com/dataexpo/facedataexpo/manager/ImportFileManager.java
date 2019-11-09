@@ -7,6 +7,8 @@ import android.util.Log;
 import com.baidu.idl.main.facesdk.model.BDFaceSDKCommon;
 import com.baidu.idl.main.facesdk.utils.ZipUtils;
 import com.dataexpo.facedataexpo.Utils.FileUtils;
+import com.dataexpo.facedataexpo.Utils.LogUtils;
+import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.listener.OnImportListener;
 import com.dataexpo.facedataexpo.model.User;
@@ -82,6 +84,87 @@ public class ImportFileManager {
 
         // 开启线程解压、导入
         asyncImport(batchFaceDir, zipFile);
+    }
+
+    /**
+     * 通过选择相册批量导入用户
+     *
+     */
+    public void asyncImportByGallery(final List<String> images) {
+        if (mExecutorService == null) {
+            mExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mFuture = mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                String userName;
+                float ret;
+                boolean importDBSuccess;
+                String picName;
+
+                for (int i = 0; i < images.size(); i++) {
+                    // 根据图片的路径将图片转成Bitmap
+                    Bitmap bitmap = BitmapFactory.decodeFile(images.get(i));
+
+                    //使用系统时间作为用户名
+                    userName = Utils.timeNow();
+                    picName = userName + ".jpg";
+
+                    if (bitmap != null) {
+                        byte[] bytes = new byte[512];
+
+                        // 走人脸SDK接口，通过人脸检测、特征提取拿到人脸特征值
+                        ret = FaceApi.getInstance().getFeature(bitmap, bytes,
+                                BDFaceSDKCommon.FeatureType.BDFACE_FEATURE_TYPE_LIVE_PHOTO);
+
+                        Log.i(TAG, "live_photo = " + ret);
+
+                        if (ret == -1) {
+                            LogUtils.e(TAG, "：未检测到人脸，可能原因：人脸太小 ");
+
+                        } else if (ret == 128) {
+                            // 将用户信息和用户组信息保存到数据库
+                            importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager("default",
+                                    userName, picName, null, bytes);
+
+                            // 保存数据库成功
+                            if (importDBSuccess) {
+                                // 保存图片到注册用户图片路径
+                                File facePicDir = FileUtils.getBatchImportSuccessDirectory();
+
+                                if (facePicDir != null) {
+                                    File savePicPath = new File(facePicDir, picName);
+
+                                    if (FileUtils.saveBitmap(savePicPath, bitmap)) {
+                                        LogUtils.i(TAG, "图片保存成功");
+                                        if (mImportListener != null) {
+                                            mImportListener.showToastMessage("保存成功！" + userName);
+                                        }
+
+                                    } else {
+                                        LogUtils.e(TAG, "：图片保存失败");
+                                    }
+                                }
+                            } else {
+                                LogUtils.e(TAG, "：保存到数据库失败");
+
+                            }
+                        } else {
+                            LogUtils.e(TAG, "：未检测到人脸");
+                        }
+
+                        // 图片回收
+                        if (!bitmap.isRecycled()) {
+                            bitmap.recycle();
+                        }
+
+                    } else {
+                        LogUtils.e(TAG, "：该图片转成Bitmap失败");
+                    }
+                }
+            }
+        });
     }
 
     /**

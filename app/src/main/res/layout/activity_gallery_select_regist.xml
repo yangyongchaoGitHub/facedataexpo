@@ -16,4 +16,11 @@
         android:layout_height="wrap_content"
         android:text="@string/back"
         android:layout_alignParentBottom="true"/>
+    <Button
+        android:id="@+id/btn_add_gallery_select_regist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

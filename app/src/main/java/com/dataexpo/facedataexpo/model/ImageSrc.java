@@ -5,6 +5,15 @@ public class ImageSrc {
     private int imageSrcId;
     private String uri;
     private String info;
+    private boolean isCheck = false;
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
+    }
 
     public String getUri() {
         return uri;

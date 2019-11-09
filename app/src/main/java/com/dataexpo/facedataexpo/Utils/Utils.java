@@ -41,6 +41,15 @@ public class Utils {
         DateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);
     }
+
+    /**
+     * 获取当前时间的字符串
+     */
+    public static String timeNow() {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return dateFormat.format(date);
+    }
 }
 
 
