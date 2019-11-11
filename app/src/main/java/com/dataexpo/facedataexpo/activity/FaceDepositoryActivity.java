@@ -30,6 +30,7 @@ import com.dataexpo.facedataexpo.listener.OnItemLongClickListener;
 import com.dataexpo.facedataexpo.manager.UserInfoManager;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.CircleImageView;
+import com.dataexpo.facedataexpo.Utils.Utils;
 
 import java.util.List;
 
@@ -42,8 +43,10 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private List<User> mListUserInfo;
     private TextView mTextGroupName;
     private boolean isShowCheck = false;
+    private TextView btn_cancel;
+    private TextView btn_delete;
 
-    private String mGroupId = "";
+    private String mGroupId = "default";
     private ButtonState mButtonState = ButtonState.BATCH_OPERATION;             // 当前按钮状态
 
     @Override
@@ -61,7 +64,26 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
             case R.id.btn_add:
                 //进行注册方式选择
                 startActivity(new Intent(this, FaceRegistActivity.class));
+                break;
 
+            case R.id.btn_face_depository_cancel:
+                for (int i = 0; i < mListUserInfo.size(); i++) {
+                    mListUserInfo.get(i).setChecked(false);
+                }
+                isShowCheck = false;
+                mFaceUserAdapter.setShowCheckBox(isShowCheck);
+                btn_cancel.setVisibility(View.INVISIBLE);
+                btn_delete.setVisibility(View.INVISIBLE);
+                mFaceUserAdapter.notifyDataSetChanged();
+                break;
+
+            case R.id.btn_face_depository_delete:
+                UserInfoManager.getInstance().deleteUserListInfo(mListUserInfo, mUserListListener, 0);
+                //UserInfoManager.getInstance().deleteUserInfo(mUserId, mGroupId, mListener);
+                break;
+
+            case R.id.btn_face_depository_back:
+                finish();
                 break;
                 default:
         }
@@ -74,13 +96,26 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        LogUtils.i(TAG, "item click: " + position);
+    protected void onDestroy() {
+        super.onDestroy();
+        UserInfoManager.getInstance().release();
+    }
 
-        if (position < mListUserInfo.size()) {
-            mListUserInfo.get(position).setChecked(!mListUserInfo.get(position).isChecked());
+    @Override
+    public void onItemClick(View view, int position) {
+        if (isShowCheck) {
+            LogUtils.i(TAG, "item click: " + position);
+
+            if (position < mListUserInfo.size()) {
+                mListUserInfo.get(position).setChecked(!mListUserInfo.get(position).isChecked());
+            }
+            mFaceUserAdapter.notifyDataSetChanged();
+        } else {
+            Intent intent  = new Intent(this, UserInfoActivity.class);
+            User u = mListUserInfo.get(position);
+            intent.putExtra(Utils.EXTRA_EXPO_USRE, u);
+            startActivity(intent);
         }
-        mFaceUserAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -89,6 +124,8 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         mFaceUserAdapter.setShowCheckBox(isShowCheck);
         LogUtils.i(TAG, "isShowCheck:: " + isShowCheck);
         mFaceUserAdapter.notifyDataSetChanged();
+        btn_cancel.setVisibility(View.VISIBLE);
+        btn_delete.setVisibility(View.VISIBLE);
     }
 
     private enum ButtonState {
@@ -102,7 +139,6 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
 //            mGroupId = intent.getStringExtra("group_id");
 //            //mTextGroupName.setText("组：" + mGroupId);
 //        }
-
         mGroupId = "default";
 
         mUserListListener = new UserListListener();
@@ -122,6 +158,11 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         mFaceUserAdapter.setItemClickListener(this);
         mFaceUserAdapter.setOnItemLongClickListener(this);
         findViewById(R.id.btn_add).setOnClickListener(this);
+        findViewById(R.id.btn_face_depository_back).setOnClickListener(this);
+        btn_cancel = findViewById(R.id.btn_face_depository_cancel);
+        btn_delete = findViewById(R.id.btn_face_depository_delete);
+        btn_delete.setOnClickListener(this);
+        btn_cancel.setOnClickListener(this);
 
     }
 
@@ -160,6 +201,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
                     } else {
                         mListUserInfo = listUserInfo;
                     }
+
                     ToastUtils.toast(mContext, "用户数：" + listUserInfo.size());
                     mFaceUserAdapter.setDataList(listUserInfo);
 

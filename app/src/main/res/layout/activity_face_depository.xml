@@ -8,6 +8,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <Button
+            android:id="@+id/btn_face_depository_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/back"/>
+
+        <TextView
+            android:id="@+id/btn_face_depository_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:visibility="invisible"
+            android:layout_toRightOf="@+id/btn_face_depository_back"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="18dp"
@@ -21,6 +37,14 @@
             android:layout_alignParentRight="true"
             android:text="+"
             android:textSize="50dp"/>
+
+        <TextView
+            android:id="@+id/btn_face_depository_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete"
+            android:visibility="invisible"
+            android:layout_toStartOf="@+id/btn_add"/>
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

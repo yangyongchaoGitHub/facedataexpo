@@ -16,4 +16,6 @@
     <string name="un1">可拓展</string>
     <string name="un2">可拓展</string>
     <string name="add">添加</string>
+    <string name="create_name">创建时间</string>
+    <string name="delete">删除</string>
 </resources>

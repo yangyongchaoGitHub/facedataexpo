@@ -2,10 +2,12 @@ package com.dataexpo.facedataexpo.model;
 
 import android.util.Base64;
 
+import java.io.Serializable;
+
 /**
  * 用户实体类
  */
-public class User {
+public class User implements Serializable {
     private int id;
     private String userId = "";
     private String userName = "";

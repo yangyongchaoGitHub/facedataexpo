@@ -40,5 +40,7 @@
         <activity android:name=".activity.FaceRegistActivity"/>
         <activity android:name=".activity.PhotoRegistActivity"/>
         <activity android:name=".activity.GallerySelectRegistActivity"/>
+        <activity android:name=".activity.UserInfoActivity"/>
+
     </application>
 </manifest>

@@ -12,6 +12,8 @@ import java.util.Date;
  */
 public class Utils {
 
+    public static final String EXTRA_EXPO_USRE = "extra_expo_user";
+
     /**
      *  获取版本号
      * @param context

@@ -27,7 +27,7 @@
             android:gravity="center"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:text="点确定就可以了" />
     </RelativeLayout>
 
     <Button
