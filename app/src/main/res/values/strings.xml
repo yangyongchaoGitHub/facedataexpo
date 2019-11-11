@@ -18,4 +18,12 @@
     <string name="add">添加</string>
     <string name="create_name">创建时间</string>
     <string name="delete">删除</string>
+    <string name="min_face">最小检测人脸</string>
+    <string name="silent_live_type">活体模式</string>
+    <string name="feature_threshold_value">识别阈值</string>
+    <string name="rgb_live_threshold">RGB活体阈值</string>
+    <string name="nir_live_threshold">NIR活体阈值 </string>
+    <string name="depth_lice_threshold">Depth活体阈值</string>
+    <string name="detect_type">检测形式</string>
+    <string name="all_config">全部设置</string>
 </resources>

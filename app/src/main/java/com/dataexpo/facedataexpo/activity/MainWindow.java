@@ -19,9 +19,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceInfo;
 import com.dataexpo.facedataexpo.R;
+import com.dataexpo.facedataexpo.Utils.ConfigUtils;
 import com.dataexpo.facedataexpo.Utils.DensityUtils;
 import com.dataexpo.facedataexpo.Utils.FaceOnDrawTexturViewUtil;
 import com.dataexpo.facedataexpo.Utils.FileUtils;
@@ -67,14 +69,25 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     private RelativeLayout info_rl;
     private Button btn_login;
     private LoginDialog mDialog;
-    EditText et_login;
+    private EditText et_login;
+    private boolean isConfigExit;
+    private boolean isInitConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_show);
-
         mContext = this;
+
+        isConfigExit = ConfigUtils.isConfigExit();
+        isInitConfig = ConfigUtils.initConfig();
+        if (isInitConfig && isConfigExit) {
+            Toast.makeText(mContext, "初始配置加载成功", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mContext, "初始配置失败,将重置文件内容为默认配置", Toast.LENGTH_SHORT).show();
+            ConfigUtils.modityJson();
+        }
+
         initView();
         initLicense();
         // 屏幕的宽
@@ -138,34 +151,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
         // 调试按钮
         //findViewById(R.id.debug_btn).setOnClickListener(this);
-        //导入文件时的回调
-        ImportFileManager.getInstance().setOnImportListener(new OnImportListener() {
-            @Override
-            public void startUnzip() {
-
-            }
-
-            @Override
-            public void showProgressView() {
-
-            }
-
-            @Override
-            public void onImporting(int finishCount, int successCount, int failureCount, float progress) {
-
-            }
-
-            @Override
-            public void endImport(int finishCount, int successCount, int failureCount) {
-                FaceApi.getInstance().initDatabases(true);
-
-            }
-
-            @Override
-            public void showToastMessage(String message) {
-                ToastUtils.toast(mContext, message);
-            }
-        });
     }
 
     private void initLicense() {
