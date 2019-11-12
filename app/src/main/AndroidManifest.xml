@@ -42,6 +42,7 @@
         <activity android:name=".activity.GallerySelectRegistActivity"/>
         <activity android:name=".activity.UserInfoActivity"/>
         <activity android:name=".activity.SettingMainActivity"/>
+        <activity android:name=".activity.set.FaceAuthActivity"/>
 
     </application>
 </manifest>

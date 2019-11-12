@@ -28,11 +28,11 @@ public class LogUtils {
     }
 
     public static int i(String tag, String msg) {
-        if (isDebug) {
+        //if (isDebug) {
             return Log.i(tag, msg);
-        } else {
-            return -1;
-        }
+        //} else {
+        //    return -1;
+        //}
     }
 
     public static int w(String tag, String msg) {

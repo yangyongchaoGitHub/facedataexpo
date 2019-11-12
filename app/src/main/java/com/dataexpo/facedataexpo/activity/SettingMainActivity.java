@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.activity.set.FaceAuthActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = SettingMainActivity.class.getSimpleName();
@@ -32,11 +33,15 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.ll_face_liveness_threshold).setOnClickListener(this);
         findViewById(R.id.ll_recognize_modle_threshold).setOnClickListener(this);
         findViewById(R.id.ll_detect_follow_starategy).setOnClickListener(this);
+        findViewById(R.id.ll_setting_auth).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ll_setting_auth:
+                startActivity(new Intent(mContext, FaceAuthActivity.class));
+                break;
             case R.id.ll_debug_model:
                 startActivity(new Intent(mContext, DebugModelActivity.class));
                 break;

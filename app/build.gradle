@@ -11,6 +11,20 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        debug {
+            storeFile file("../../facedataexpo_keystore/faedataexpokey.jks")
+            storePassword '18926540137'
+            keyAlias 'facedataexpokey'
+            keyPassword '18926540137'
+        }
+        release {
+            storeFile file("../../facedataexpo_keystore/faedataexpokey.jks")
+            storePassword '18926540137'
+            keyAlias 'facedataexpokey'
+            keyPassword '18926540137'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
