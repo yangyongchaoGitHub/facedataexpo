@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class ConfigUtils {
 
     // 配置文件路径
-    public static final String filePath = Environment.getExternalStorageDirectory() + File.separator + "faceConfig.txt";
+    public static final String filePath = Environment.getExternalStorageDirectory() + File.separator + "faceConfig_dataexpo.txt";
 
 
     public static boolean isConfigExit() {

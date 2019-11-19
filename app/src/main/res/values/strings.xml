@@ -30,4 +30,5 @@
     <string name="auth">授权激活</string>
     <string name="check_license">检测license</string>
     <string name="offline_auth">离线激活</string>
+    <string name="some_seting">部分阈值设置</string>
 </resources>

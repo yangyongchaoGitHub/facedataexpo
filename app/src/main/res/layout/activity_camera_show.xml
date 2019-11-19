@@ -28,8 +28,7 @@
     <com.dataexpo.facedataexpo.camera.AutoTexturePreviewView
         android:id="@+id/auto_camera_preview_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-         />
+        android:layout_height="match_parent" />
     <!--android:layout_below="@id/search_title"-->
     <TextureView
         android:id="@+id/draw_detect_face_view"
@@ -52,10 +51,12 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:visibility="gone" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_logig"
+        android:background="@android:color/transparent"
+        android:id="@+id/btn_login"
         android:text="@string/login"/>
 
     <RelativeLayout

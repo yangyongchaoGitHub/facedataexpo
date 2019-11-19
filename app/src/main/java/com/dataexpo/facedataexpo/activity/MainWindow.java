@@ -125,7 +125,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         info_rl = findViewById(R.id.layout_info);
         //获取注册按钮
         //btn_login = findViewById(R.id.btn_logig);
-        findViewById(R.id.btn_logig).setOnClickListener(this);
+        findViewById(R.id.btn_login).setOnClickListener(this);
 
         // 画人脸框
         paint = new Paint();
@@ -312,7 +312,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_logig:
+            case R.id.btn_login:
                 mDialog.show();
                 break;
                 default:

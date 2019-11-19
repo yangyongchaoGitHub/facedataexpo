@@ -103,13 +103,13 @@ public class FaceSDKManager {
         //在MI8上
         //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "HPYX-AEQ9-PGNU-GQTA");
         //在开发板上
-        String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
+        //String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
         //开发板原有的key    3PSM-KOHY-AQLG-BBWI
-        //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "3PSM-KOHY-AQLG-BBWI");
+        String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "3PSM-KOHY-AQLG-BBWI");
 
-        if (!TextUtils.isEmpty(licenseOfflineKey) && TextUtils.isEmpty(licenseOnlineKey)) {
-            licenseOnlineKey = licenseOfflineKey;
-        }
+//        if (!TextUtils.isEmpty(licenseOfflineKey) && TextUtils.isEmpty(licenseOnlineKey)) {
+//            licenseOnlineKey = licenseOfflineKey;
+//        }
 
         LogUtils.i("FaceSDKManager", "offLineKey:" + licenseOfflineKey + " onLineKey: " + licenseOnlineKey);
 
@@ -121,19 +121,17 @@ public class FaceSDKManager {
             }
             return;
         }
-        LogUtils.i("FaceSDKManager", "进行离线激活1");
         // todo 增加判空处理
         if (listener != null) {
             listener.initStart();
         }
-        LogUtils.i("FaceSDKManager", "进行离线激活2");
         if (!TextUtils.isEmpty(licenseOfflineKey)) {
-            LogUtils.i("FaceSDKManager", "进行离线激活3");
+            LogUtils.i("FaceSDKManager", "进行离线激活");
             // 离线激活
             faceAuth.initLicenseOffLine(context, new Callback() {
                 @Override
                 public void onResponse(int code, String response) {
-                    LogUtils.i("FaceSDKManager", "进行离线激活3 code:" + code + " " + response);
+                    LogUtils.i("FaceSDKManager", "进行离线激活 code:" + code + " " + response);
                     if (code == 0) {
                         initStatus = SDK_INIT_SUCCESS;
                         if (listener != null) {
@@ -148,6 +146,7 @@ public class FaceSDKManager {
                 }
             });
         } else if (!TextUtils.isEmpty(licenseOnlineKey)) {
+            LogUtils.i("FaceSDKManager", "进行在线激活");
             // 在线激活
             faceAuth.initLicenseOnLine(context, licenseOnlineKey, new Callback() {
                 @Override

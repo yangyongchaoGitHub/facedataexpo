@@ -13,13 +13,13 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file("../../facedataexpo_keystore/faedataexpokey.jks")
+            storeFile file('H:\\facedataexpo_keystore\\faedataexpokey.jks')
             storePassword '18926540137'
             keyAlias 'facedataexpokey'
             keyPassword '18926540137'
         }
         release {
-            storeFile file("../../facedataexpo_keystore/faedataexpokey.jks")
+            storeFile file('H:\\facedataexpo_keystore\\faedataexpokey.jks')
             storePassword '18926540137'
             keyAlias 'facedataexpokey'
             keyPassword '18926540137'
@@ -41,4 +41,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(':facelibrary')
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

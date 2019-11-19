@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.activity.set.CameraDisplayAngleActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceAuthActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
@@ -34,14 +35,20 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.ll_recognize_modle_threshold).setOnClickListener(this);
         findViewById(R.id.ll_detect_follow_starategy).setOnClickListener(this);
         findViewById(R.id.ll_setting_auth).setOnClickListener(this);
+        findViewById(R.id.btn_setting_main_back).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_setting_main_back:
+                finish();
+                break;
+
             case R.id.ll_setting_auth:
                 startActivity(new Intent(mContext, FaceAuthActivity.class));
                 break;
+
             case R.id.ll_debug_model:
                 startActivity(new Intent(mContext, DebugModelActivity.class));
                 break;
@@ -51,10 +58,13 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
 
             case R.id.ll_min_face:
                 break;
+
             case R.id.ll_face_detect_angle:
                 break;
 
             case R.id.ll_camera_display_angle:
+                // 摄像头视频流回显角度
+                startActivity(new Intent(this, CameraDisplayAngleActivity.class));
                 break;
 
             case R.id.ll_quality_control:

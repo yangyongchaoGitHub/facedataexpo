@@ -17,7 +17,7 @@ public class LoginDialog extends Dialog {
     private OnDialogClickListener dialogClickListener;
 
     public LoginDialog(Context context) {
-        this(context, 0);
+        this(context, R.style.LoginDialogStyle);
     }
 
     public LoginDialog(Context context, int themeResId) {
@@ -61,10 +61,6 @@ public class LoginDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-    }
-
-    public void refresh() {
-
     }
 
     public void setDialogClickListener(OnDialogClickListener listener) {

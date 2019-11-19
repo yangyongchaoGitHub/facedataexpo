@@ -48,6 +48,7 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
         tv_detect_type.setText("wireframe".equals(SingleBaseConfig.getBaseConfig().getDetectFrame()) ? "全屏线框"
                 : "fixed_area".equals(SingleBaseConfig.getBaseConfig().getDetectFrame())
                 ? "固定检测区域" : "全屏线框");
+
         FaceAuth fa = new FaceAuth();
         tv_device_id.setText(fa.getDeviceId(this));
     }
