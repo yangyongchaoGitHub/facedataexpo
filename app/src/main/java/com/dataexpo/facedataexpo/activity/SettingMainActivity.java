@@ -9,6 +9,7 @@ import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.activity.set.CameraDisplayAngleActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceAuthActivity;
+import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
 import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
@@ -67,13 +68,14 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
 
             case R.id.ll_camera_display_angle:
                 // 摄像头视频流回显角度
-                startActivity(new Intent(this, CameraDisplayAngleActivity.class));
+                startActivity(new Intent(mContext, CameraDisplayAngleActivity.class));
                 break;
 
             case R.id.ll_quality_control:
                 break;
 
             case R.id.ll_face_liveness_type:
+                startActivity(new Intent(mContext, FaceLivinessType.class));
                 break;
 
             case R.id.ll_face_liveness_threshold:

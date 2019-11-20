@@ -4,6 +4,12 @@ public class BaseConfig {
     public final static int MIN_FACE_LEAST = 30;
     public final static int MIN_FACE_MOST = 200;
     public final static int MIN_FACE_STEP = 10;
+
+    public final static int TYPE_NO_LIVE = 1;
+    public final static int TYPE_RGB_LIVE = 2;
+    public final static int TYPE_RGBANDNIR_LIVE = 3;
+    public final static int TYPE_RGBANDDEPTH_LIVE = 4;
+
     // RGB检测帧回显
     private Boolean display = true;
     // RGB预览Y轴转向falese为0，true为180

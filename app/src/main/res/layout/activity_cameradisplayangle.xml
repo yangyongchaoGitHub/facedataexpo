@@ -39,7 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/x50"
-        android:text="此项设置用于管理：摄像头输出视频流的实际预览界面角度，仅作用于RGB视频流的回显界面。可用于纠正部分摄像头输出视频流角度不正确的问题，从而确保人脸保持水平朝上。"
+        android:text="@string/cameradisplayangle_description"
         android:textColor="@color/black"
         android:textSize="@dimen/x46"
         app:layout_constraintBottom_toBottomOf="parent"

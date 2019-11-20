@@ -34,4 +34,14 @@
     <string name="min_face_setting">最小检测人脸设置</string>
     <string name="min_face_setting_dspc">最小检测人脸是指：视频流中可以检测到的人脸的最小面积，相同镜头焦距情况下，此数值设置的越小，人脸越容易被检测到，对应的可识别距离也就越大，此数值通常和分辨率一起使用。数值可调整范围为30px至200px之间，需要同时考虑分辨率大小因素影响，每次调解上下改动幅度为10px</string>
     <string name="min_face_setting_value">最小检测人脸:(像素)</string>
+    <string name="face_liviness_set">镜头及活体模式设置</string>
+    <string name="cameradisplayangle_description">此项设置用于管理：摄像头输出视频流的实际预览界面角度，仅作用于RGB视频流的回显界面。可用于纠正部分摄像头输出视频流角度不正确的问题，从而确保人脸保持水平朝上。</string>
+    <string name="no_live_desp">活体检测主要用于判断用户是否为真人，但如使用场景下，常有固定人员看守，则可无需活体，直接采集人脸。因为活体检测虽然保障了安全性，但却会影响一定的通过率</string>
+    <string name="no_live">不使用活体检测</string>
+    <string name="rgb_live">RGB单目活体</string>
+    <string name="rgbandnir_live">RGB+NIR活体</string>
+    <string name="rgb_live_desp">仅使用RGB活体（单目活体），可有效防止照片翻拍、屏幕等攻击，前端采集为USB单目镜头即可。</string>
+    <string name="rgbandnir_live_desp">RGB单目活体+NIR近红外活体，基于近红外图像的成像特点，如屏幕无法成像，不同材质反射率不同等，可对屏幕、高清照片等攻击，更加有效的防作弊。</string>
+    <string name="rgbanddepth">RGB+Depth活体</string>
+    <string name="rgbanddepth_desp">RGB单目活体+Depth深度活体，在RGB活体的安全级别基础上，对屏幕、高清彩灯照片、视频、模具等防御力更强。硬件需要搭配3D结构光、TOF类型的镜头。</string>
 </resources>

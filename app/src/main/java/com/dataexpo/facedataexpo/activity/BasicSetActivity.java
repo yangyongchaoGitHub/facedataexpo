@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.baidu.idl.main.facesdk.FaceAuth;
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
 import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
@@ -66,6 +67,8 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
         tv_min_face = findViewById(R.id.tv_min_face_value);
         tv_min_face.setOnClickListener(this);
         findViewById(R.id.tv_basicset_min_face_dspc).setOnClickListener(this);
+        findViewById(R.id.tv_basicset_silent_live_type_dspc).setOnClickListener(this);
+        findViewById(R.id.tv_silent_live_type_value).setOnClickListener(this);
         tv_silent_live_type = findViewById(R.id.tv_silent_live_type_value);
         tv_feature_threshold = findViewById(R.id.tv_feature_threshold_value);
         tv_rgb_live_threshold = findViewById(R.id.tv_rgb_live_threshold_value);
@@ -78,6 +81,11 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_silent_live_type_value:
+            case R.id.tv_basicset_silent_live_type_dspc:
+                startActivity(new Intent(mContext, FaceLivinessType.class));
+                break;
+
             case R.id.tv_basicset_min_face_dspc:
             case R.id.tv_min_face_value:
                 startActivity(new Intent(mContext, MinFaceActivity.class));
