@@ -43,4 +43,22 @@
         <item name="android:layout_alignParentTop">true</item>
     </style>
 
+    <style name="BasicSetItem">
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintRight_toRightOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="layout_constraintVertical_bias">0.02</item>
+        <item name="layout_constraintHorizontal_bias">0.03</item>
+    </style>
+
+    <style name="BasicSetItem.dspc" parent="BasicSetItem">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/x36</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BasicSetItem_value">
+        <item name="android:textSize">@dimen/x30</item>
+        <item name="android:layout_marginStart">10dp</item>
+    </style>
 </resources>

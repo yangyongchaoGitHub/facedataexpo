@@ -9,6 +9,7 @@ import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.activity.set.CameraDisplayAngleActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceAuthActivity;
+import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = SettingMainActivity.class.getSimpleName();
@@ -56,7 +57,9 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_mirror:
                 break;
 
+                // 最小识别人脸像素设置
             case R.id.ll_min_face:
+                startActivity(new Intent(mContext, MinFaceActivity.class));
                 break;
 
             case R.id.ll_face_detect_angle:

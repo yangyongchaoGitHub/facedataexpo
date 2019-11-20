@@ -1,183 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_basicset_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/x20"
+        android:gravity="center"
         android:text="@string/some_seting"
+        android:textColor="@color/black"
+        android:textSize="@dimen/x50"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/x50"
-        android:layout_marginTop="@dimen/x20"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/device_id_dspc"
+        style="@style/BasicSetItem.dspc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_basicset_title"
-        android:text="@string/device_id"/>
+        android:textSize="@dimen/x36"
+        android:textStyle="bold"
+        android:text="@string/device_id"
+        app:layout_constraintTop_toBottomOf="@+id/tv_basicset_title" />
+
+    <TextView
+        android:id="@+id/tv_device_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/device_id_dspc"
+        app:layout_constraintTop_toTopOf="@+id/device_id_dspc" />
+
+    <TextView
+        android:id="@+id/tv_basicset_min_face_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/min_face"
+        app:layout_constraintTop_toBottomOf="@+id/device_id_dspc" />
+
+    <TextView
+        android:id="@+id/tv_min_face_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_basicset_min_face_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_basicset_min_face_dspc" />
+
+    <TextView
+        android:id="@+id/tv_basicset_silent_live_type_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/silent_live_type"
+        app:layout_constraintTop_toBottomOf="@+id/tv_basicset_min_face_dspc" />
+
+    <TextView
+        android:id="@+id/tv_silent_live_type_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_basicset_silent_live_type_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_basicset_silent_live_type_dspc" />
+
+    <TextView
+        android:id="@+id/tv_feature_threshold_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/feature_threshold_value"
+        app:layout_constraintTop_toBottomOf="@+id/tv_basicset_silent_live_type_dspc" />
+
+    <TextView
+        android:id="@+id/tv_feature_threshold_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_feature_threshold_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_feature_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_rgb_live_threshold_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rgb_live_threshold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_feature_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_rgb_live_threshold_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_rgb_live_threshold_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_rgb_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_nir_live_threshold_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nir_live_threshold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rgb_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_nir_live_threshold_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_nir_live_threshold_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_nir_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_depth_live_threshold_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/depth_lice_threshold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_nir_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_depth_live_threshold_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_depth_live_threshold_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_depth_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_detect_type_dspc"
+        style="@style/BasicSetItem.dspc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detect_type"
+        app:layout_constraintTop_toBottomOf="@+id/tv_depth_live_threshold_dspc" />
+
+    <TextView
+        android:id="@+id/tv_detect_type_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/BasicSetItem_value"
+        app:layout_constraintLeft_toRightOf="@+id/tv_detect_type_dspc"
+        app:layout_constraintTop_toTopOf="@+id/tv_detect_type_dspc" />
+
+    <Button
+        android:id="@+id/btn_set_confirm"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/confirm" />
+
+    <Button
+        android:id="@+id/btn_face_depository"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/facedepository" />
+
+    <Button
+        android:id="@+id/btn_basecset_all_config"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/all_config" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/all_config"-->
-        <!--android:id="@+id/btn_basecset_all_config"-->
-        <!--android:layout_alignParentRight="true"/>-->
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ll_auth"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="vertical"-->
-        <!--android:layout_below="@+id/btn_basecset_all_config">-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/device_id"/>-->
-
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/tv_device_id"/>-->
-    <!--</LinearLayout>-->
-
-    <!--<TextView-->
-        <!--android:layout_below="@+id/ll_auth"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:id="@+id/tv_min_face"-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/min_face"/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_min_face_value"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignTop="@+id/tv_min_face"-->
-        <!--android:layout_toEndOf="@+id/tv_min_face"-->
-        <!--android:textSize="20dp" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_silent_live_type"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="20dp"-->
-        <!--android:text="@string/silent_live_type"-->
-        <!--android:layout_below="@+id/tv_min_face"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="20dp"-->
-        <!--android:id="@+id/tv_silent_live_type_value"-->
-        <!--android:layout_toEndOf="@+id/tv_silent_live_type"-->
-        <!--android:layout_alignTop="@+id/tv_silent_live_type"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_feature_threshold"-->
-        <!--android:text="@string/feature_threshold_value"-->
-        <!--android:layout_below="@+id/tv_silent_live_type"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_feature_threshold_value"-->
-        <!--android:layout_toEndOf="@+id/tv_feature_threshold"-->
-        <!--android:layout_alignTop="@+id/tv_feature_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_rgb_live_threshold"-->
-        <!--android:text="@string/rgb_live_threshold"-->
-        <!--android:layout_below="@+id/tv_feature_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_rgb_live_threshold_value"-->
-        <!--android:layout_toEndOf="@+id/tv_rgb_live_threshold"-->
-        <!--android:layout_alignTop="@id/tv_rgb_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_nir_live_threshold"-->
-        <!--android:text="@string/nir_live_threshold"-->
-        <!--android:layout_below="@+id/tv_rgb_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_nir_live_threshold_value"-->
-        <!--android:layout_toEndOf="@+id/tv_nir_live_threshold"-->
-        <!--android:layout_alignTop="@id/tv_nir_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_depth_live_threshold"-->
-        <!--android:text="@string/depth_lice_threshold"-->
-        <!--android:layout_below="@+id/tv_nir_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_depth_live_threshold_value"-->
-        <!--android:layout_toEndOf="@+id/tv_depth_live_threshold"-->
-        <!--android:layout_alignTop="@+id/tv_depth_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_detect_type"-->
-        <!--android:text="@string/detect_type"-->
-        <!--android:layout_below="@+id/tv_depth_live_threshold"/>-->
-
-    <!--<TextView-->
-        <!--android:textSize="20dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_detect_type_value"-->
-        <!--android:layout_toEndOf="@+id/tv_detect_type"-->
-        <!--android:layout_alignTop="@+id/tv_detect_type"/>-->
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_set_confirm"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/confirm"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--/>-->
-    <!--<Button-->
-        <!--android:id="@+id/btn_face_depository"-->
-        <!--android:layout_width="100dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/facedepository"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentBottom="true"/>-->
-<!--</RelativeLayout>-->

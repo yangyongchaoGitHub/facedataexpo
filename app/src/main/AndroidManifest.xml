@@ -44,6 +44,7 @@
         <activity android:name=".activity.SettingMainActivity"/>
         <activity android:name=".activity.set.FaceAuthActivity"/>
         <activity android:name=".activity.set.CameraDisplayAngleActivity"/>
+        <activity android:name=".activity.set.MinFaceActivity"/>
 
     </application>
 </manifest>

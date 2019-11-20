@@ -1,6 +1,9 @@
 package com.dataexpo.facedataexpo.model;
 
 public class BaseConfig {
+    public final static int MIN_FACE_LEAST = 30;
+    public final static int MIN_FACE_MOST = 200;
+    public final static int MIN_FACE_STEP = 10;
     // RGB检测帧回显
     private Boolean display = true;
     // RGB预览Y轴转向falese为0，true为180
