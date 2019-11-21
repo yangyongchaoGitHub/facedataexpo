@@ -51,6 +51,8 @@ import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.view.LoginDialog;
 import com.dataexpo.facedataexpo.view.PreviewTexture;
 
+import java.util.Date;
+
 import static com.dataexpo.facedataexpo.camera.BaseCameraManager.CAMERA_FACING_FRONT;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_NO_LIVE;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGBANDNIR_LIVE;
@@ -61,11 +63,8 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     // 图片越大，性能消耗越大，也可以选择640*480， 1280*720
 //    private static final int PREFER_WIDTH = 640;
 //    private static final int PERFER_HEIGH = 480;
-    //private static final int PREFER_WIDTH = 1280;
-    //private static final int PERFER_HEIGH = 720;
-
-    private static final int PREFER_WIDTH = 1920;
-    private static final int PERFER_HEIGH = 1080;
+    private static final int PREFER_WIDTH = 1280;
+    private static final int PERFER_HEIGH = 720;
 
     private Context mContext;
 
@@ -276,9 +275,8 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     }
 
     private void dealRgb(byte[] data, int width, int height) {
-
-        if (SingleBaseConfig.getBaseConfig().getType() == TYPE_NO_LIVE ||
-            SingleBaseConfig.getBaseConfig().getType() == TYPE_RGB_LIVE) {
+        if (mLiveType == TYPE_NO_LIVE ||
+                mLiveType == TYPE_RGB_LIVE) {
             FaceSDKManager.getInstance().onDetectCheck(data, null, null,
                     height, width, mLiveType, new FaceDetectCallBack() {
                         @Override
@@ -297,7 +295,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                             showFrame(livenessModel);
                         }
                     });
-        } else if (SingleBaseConfig.getBaseConfig().getType() == TYPE_RGBANDNIR_LIVE) {
+        } else if (mLiveType == TYPE_RGBANDNIR_LIVE) {
             rgbData = data;
             checkData();
         }
@@ -315,7 +313,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
     private synchronized void checkData() {
         if (rgbData != null && irData != null) {
-
             FaceSDKManager.getInstance().onDetectCheck(rgbData, irData, null, PERFER_HEIGH,
                     PREFER_WIDTH, TYPE_RGBANDNIR_LIVE, new FaceDetectCallBack() {
                         @Override

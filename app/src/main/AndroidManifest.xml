@@ -41,11 +41,12 @@
         <activity android:name=".activity.PhotoRegistActivity"/>
         <activity android:name=".activity.GallerySelectRegistActivity"/>
         <activity android:name=".activity.UserInfoActivity"/>
-        <activity android:name=".activity.SettingMainActivity"/>
+        <activity android:name=".activity.set.SettingMainActivity"/>
         <activity android:name=".activity.set.FaceAuthActivity"/>
         <activity android:name=".activity.set.CameraDisplayAngleActivity"/>
         <activity android:name=".activity.set.MinFaceActivity"/>
         <activity android:name=".activity.set.FaceLivinessType"/>
+        <activity android:name=".activity.set.RecognizeModleThresholdActivity"/>
 
     </application>
 </manifest>

@@ -10,6 +10,9 @@ public class BaseConfig {
     public final static int TYPE_RGBANDNIR_LIVE = 3;
     public final static int TYPE_RGBANDDEPTH_LIVE = 4;
 
+    public final static int THRESHOLD_MIN = 0;
+    public final static int THRESHOLD_MAX = 100;
+
     // RGB检测帧回显
     private Boolean display = true;
     // RGB预览Y轴转向falese为0，true为180    镜像

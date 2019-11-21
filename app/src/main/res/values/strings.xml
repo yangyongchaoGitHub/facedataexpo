@@ -44,4 +44,7 @@
     <string name="rgbandnir_live_desp">RGB单目活体+NIR近红外活体，基于近红外图像的成像特点，如屏幕无法成像，不同材质反射率不同等，可对屏幕、高清照片等攻击，更加有效的防作弊。</string>
     <string name="rgbanddepth">RGB+Depth活体</string>
     <string name="rgbanddepth_desp">RGB单目活体+Depth深度活体，在RGB活体的安全级别基础上，对屏幕、高清彩灯照片、视频、模具等防御力更强。硬件需要搭配3D结构光、TOF类型的镜头。</string>
+    <string name="recognizeModelThreshold">识别模型阈值</string>
+    <string name="recognizeModelThreshold_value">识别模型阈值:</string>
+    <string name="recognizeModelThreshold_dspc">生活照和证件模型阈值已经都做过分值映射，官方推荐判断为同一个人的阈值为80分，详细的FAR和FRR映射关系请在SDK文档中查看</string>
 </resources>

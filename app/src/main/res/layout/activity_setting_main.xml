@@ -296,7 +296,6 @@
                     android:layout_alignParentTop="true"
                     android:orientation="horizontal">
 
-
                     <TextView
                         android:id="@+id/tv_facelivenessthreshold"
                         style="@style/SettingMainExplain"

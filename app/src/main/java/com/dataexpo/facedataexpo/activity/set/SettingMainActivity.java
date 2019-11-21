@@ -1,4 +1,4 @@
-package com.dataexpo.facedataexpo.activity;
+package com.dataexpo.facedataexpo.activity.set;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,11 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.dataexpo.facedataexpo.R;
-import com.dataexpo.facedataexpo.activity.set.BaseActivity;
-import com.dataexpo.facedataexpo.activity.set.CameraDisplayAngleActivity;
-import com.dataexpo.facedataexpo.activity.set.FaceAuthActivity;
-import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
-import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
+import com.dataexpo.facedataexpo.activity.DebugModelActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = SettingMainActivity.class.getSimpleName();
@@ -79,6 +75,7 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
                 break;
 
             case R.id.ll_face_liveness_threshold:
+                startActivity(new Intent(this, RecognizeModleThresholdActivity.class));
                 break;
 
             case R.id.ll_recognize_modle_threshold:

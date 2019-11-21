@@ -1,6 +1,5 @@
 package com.dataexpo.facedataexpo.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +11,8 @@ import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
 import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
-import com.dataexpo.facedataexpo.api.FaceApi;
+import com.dataexpo.facedataexpo.activity.set.RecognizeModleThresholdActivity;
+import com.dataexpo.facedataexpo.activity.set.SettingMainActivity;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 
 public class BasicSetActivity extends BaseActivity implements View.OnClickListener {
@@ -70,17 +70,40 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.tv_basicset_silent_live_type_dspc).setOnClickListener(this);
         findViewById(R.id.tv_silent_live_type_value).setOnClickListener(this);
         tv_silent_live_type = findViewById(R.id.tv_silent_live_type_value);
+        findViewById(R.id.tv_feature_threshold_dspc).setOnClickListener(this);
         tv_feature_threshold = findViewById(R.id.tv_feature_threshold_value);
+        tv_feature_threshold.setOnClickListener(this);
         tv_rgb_live_threshold = findViewById(R.id.tv_rgb_live_threshold_value);
+        tv_rgb_live_threshold.setOnClickListener(this);
+        findViewById(R.id.tv_rgb_live_threshold_dspc).setOnClickListener(this);
         tv_nir_live_threshold = findViewById(R.id.tv_nir_live_threshold_value);
+        tv_nir_live_threshold.setOnClickListener(this);
+        findViewById(R.id.tv_nir_live_threshold_dspc).setOnClickListener(this);
         tv_depth_lice_threshold = findViewById(R.id.tv_depth_live_threshold_value);
+        tv_depth_lice_threshold.setOnClickListener(this);
+        findViewById(R.id.tv_depth_live_threshold_dspc).setOnClickListener(this);
         tv_detect_type = findViewById(R.id.tv_detect_type_value);
+        tv_detect_type.setOnClickListener(this);
+        findViewById(R.id.tv_detect_type_dspc).setOnClickListener(this);
         tv_device_id = findViewById(R.id.tv_device_id);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_detect_type_dspc:
+            case R.id.tv_detect_type_value:
+                break;
+            case R.id.tv_depth_live_threshold_dspc:
+            case R.id.tv_depth_live_threshold_value:
+
+                break;
+            case R.id.tv_nir_live_threshold_dspc:
+            case R.id.tv_nir_live_threshold_value:
+                break;
+            case R.id.tv_rgb_live_threshold_dspc:
+            case R.id.tv_rgb_live_threshold_value:
+                break;
             case R.id.tv_silent_live_type_value:
             case R.id.tv_basicset_silent_live_type_dspc:
                 startActivity(new Intent(mContext, FaceLivinessType.class));
@@ -98,8 +121,14 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_face_depository:
                 startActivity(new Intent(this, FaceDepositoryActivity.class));
                 break;
+
             case R.id.btn_basecset_all_config:
                 startActivity(new Intent(this, SettingMainActivity.class));
+                break;
+
+            case R.id.tv_feature_threshold_value:
+            case R.id.tv_feature_threshold_dspc:
+                startActivity(new Intent(this, RecognizeModleThresholdActivity.class));
                 break;
                 default:
         }
