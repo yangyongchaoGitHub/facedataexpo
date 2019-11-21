@@ -217,12 +217,12 @@ public class FaceSDKManager {
                 long startDetectTime = System.currentTimeMillis();
                 FaceInfo[] faceInfos = FaceSDKManager.getInstance().getFaceDetect()
                         .track(BDFaceSDKCommon.DetectType.DETECT_VIS, rgbInstance);
+
                 livenessModel.setRgbDetectDuration(System.currentTimeMillis() - startDetectTime);
-                LogUtils.e(TIME_TAG, "detect vis time = " + livenessModel.getRgbDetectDuration());
+                //LogUtils.e(TIME_TAG, "detect vis time = " + livenessModel.getRgbDetectDuration());
 
                 // 检测结果判断
                 if (faceInfos != null && faceInfos.length > 0) {
-
                     livenessModel.setTrackFaceInfo(faceInfos);
                     livenessModel.setFaceInfo(faceInfos[0]);
                     livenessModel.setLandmarks(faceInfos[0].landmarks);

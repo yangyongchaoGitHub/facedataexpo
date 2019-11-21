@@ -12,7 +12,7 @@ public class BaseConfig {
 
     // RGB检测帧回显
     private Boolean display = true;
-    // RGB预览Y轴转向falese为0，true为180
+    // RGB预览Y轴转向falese为0，true为180    镜像
     private Boolean rgbRevert = false;
     // NIR或depth实时视频预览
     private Boolean isNirOrDepth = true;

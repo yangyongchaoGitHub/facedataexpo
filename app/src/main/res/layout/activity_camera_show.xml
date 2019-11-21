@@ -24,11 +24,18 @@
 
         android:visibility="invisible" />
     <!--android:layout_below="@id/search_title"-->
+    
+    <TextureView
+        android:id="@+id/auto_camera_preview_view_ir"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"/>
 
     <com.dataexpo.facedataexpo.camera.AutoTexturePreviewView
         android:id="@+id/auto_camera_preview_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <!--android:layout_below="@id/search_title"-->
     <TextureView
         android:id="@+id/draw_detect_face_view"

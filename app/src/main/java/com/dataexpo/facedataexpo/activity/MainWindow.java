@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.TextureView;
 import android.view.View;
@@ -22,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceInfo;
+import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
 import com.dataexpo.facedataexpo.R;
+import com.dataexpo.facedataexpo.Utils.BitmapUtils;
 import com.dataexpo.facedataexpo.Utils.ConfigUtils;
 import com.dataexpo.facedataexpo.Utils.DensityUtils;
 import com.dataexpo.facedataexpo.Utils.FaceOnDrawTexturViewUtil;
@@ -34,7 +37,9 @@ import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.callback.CameraDataCallback;
 import com.dataexpo.facedataexpo.callback.FaceDetectCallBack;
 import com.dataexpo.facedataexpo.camera.AutoTexturePreviewView;
+import com.dataexpo.facedataexpo.camera.BaseCameraManager;
 import com.dataexpo.facedataexpo.camera.CameraPreviewManager;
+import com.dataexpo.facedataexpo.camera.CameraPreviewManagerSingal;
 import com.dataexpo.facedataexpo.listener.OnImportListener;
 import com.dataexpo.facedataexpo.listener.SdkInitListener;
 import com.dataexpo.facedataexpo.manager.FaceSDKManager;
@@ -44,19 +49,36 @@ import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.view.LoginDialog;
+import com.dataexpo.facedataexpo.view.PreviewTexture;
+
+import static com.dataexpo.facedataexpo.camera.BaseCameraManager.CAMERA_FACING_FRONT;
+import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_NO_LIVE;
+import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGBANDNIR_LIVE;
+import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGB_LIVE;
 
 public class MainWindow extends BaseActivity implements View.OnClickListener, LoginDialog.OnDialogClickListener {
     private static final String TAG = MainWindow.class.getSimpleName();
     // 图片越大，性能消耗越大，也可以选择640*480， 1280*720
 //    private static final int PREFER_WIDTH = 640;
 //    private static final int PERFER_HEIGH = 480;
-    private static final int PREFER_WIDTH = 1280;
-    private static final int PERFER_HEIGH = 720;
+    //private static final int PREFER_WIDTH = 1280;
+    //private static final int PERFER_HEIGH = 720;
+
+    private static final int PREFER_WIDTH = 1920;
+    private static final int PERFER_HEIGH = 1080;
 
     private Context mContext;
 
     // 关闭Debug 模式
     private AutoTexturePreviewView mAutoCameraPreviewView;
+    private TextureView mAutoCameraPreviewView_ir;
+    PreviewTexture pt_ir = null;
+
+    private Camera mCamera_ir = null;
+
+    private volatile byte[] rgbData = null;
+    private volatile byte[] irData = null;
+
     private TextView mDetectText;
     private CircleImageView mDetectImage;
     private TextView mTrackText;
@@ -66,6 +88,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     private RelativeLayout relativeLayout;
     private int mLiveType;
     private float mRgbLiveScore;
+    private float mNirLiveScore;
     private RelativeLayout info_rl;
     private Button btn_login;
     private LoginDialog mDialog;
@@ -94,7 +117,9 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         int displayWidth = DensityUtils.getDisplayWidth(mContext);
         // 屏幕的高
         int displayHeight = DensityUtils.getDisplayHeight(mContext);
-        // 当屏幕的宽大于屏幕宽时
+        Log.i(TAG, "displayWidth: " + displayWidth + " displayHeight: " + displayHeight);
+
+        // 当屏幕的宽大于屏幕高时
         if (displayHeight < displayWidth) {
             // 获取高
             int height = displayHeight;
@@ -114,10 +139,11 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     }
 
     private void initView() {
-        // 活体状态
-        mLiveType = SingleBaseConfig.getBaseConfig().getType();
         // 活体阈值
         mRgbLiveScore = SingleBaseConfig.getBaseConfig().getRgbLiveScore();
+
+        //红外活体阈值
+        mNirLiveScore = SingleBaseConfig.getBaseConfig().getNirLiveScore();
         // 获取整个布局
         relativeLayout = findViewById(R.id.all_relative);
 
@@ -145,6 +171,9 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         mAutoCameraPreviewView = findViewById(R.id.auto_camera_preview_view);
         mAutoCameraPreviewView.setVisibility(View.VISIBLE);
 
+        mAutoCameraPreviewView_ir = findViewById(R.id.auto_camera_preview_view_ir);
+        pt_ir = new PreviewTexture(mContext, mAutoCameraPreviewView_ir);
+
         mDetectText = findViewById(R.id.detect_text);
         mDetectImage = findViewById(R.id.detect_reg_image_item);
         mTrackText = findViewById(R.id.track_txt);
@@ -155,6 +184,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
     private void initLicense() {
         LogUtils.i(TAG, "initLicense!!!!");
+
         if (FaceSDKManager.initStatus != FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
             FaceSDKManager.getInstance().init(mContext, new SdkInitListener() {
                 @Override
@@ -191,37 +221,186 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     @Override
     protected void onResume() {
         super.onResume();
+        // 活体状态
+        mLiveType = SingleBaseConfig.getBaseConfig().getType();
         startTestCloseDebugRegisterFunction();
     }
 
     private void startTestCloseDebugRegisterFunction() {
         // TODO ： 临时放置
         CameraPreviewManager.getInstance().setCameraFacing(CameraPreviewManager.CAMERA_USB);
-        CameraPreviewManager.getInstance().startPreview(this, mAutoCameraPreviewView,
+        CameraPreviewManager.getInstance().startPreview(mContext, mAutoCameraPreviewView,
                 PREFER_WIDTH, PERFER_HEIGH, new CameraDataCallback() {
                     @Override
                     public void onGetCameraData(byte[] data, Camera camera, int width, int height) {
                         // 摄像头预览数据进行人脸检测
-                        FaceSDKManager.getInstance().onDetectCheck(data, null, null,
-                                height, width, mLiveType, new FaceDetectCallBack() {
-                                    @Override
-                                    public void onFaceDetectCallback(LivenessModel livenessModel) {
-                                        // 输出结果
-                                        checkCloseResult(livenessModel);
-                                    }
-
-                                    @Override
-                                    public void onTip(int code, String msg) {
-                                        displayTip(code, msg);
-                                    }
-
-                                    @Override
-                                    public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
-                                        showFrame(livenessModel);
-                                    }
-                                });
+                        dealRgb(data, width, height);
                     }
                 });
+
+        if (mLiveType == TYPE_NO_LIVE ||
+                mLiveType == TYPE_RGB_LIVE) {
+
+        } else if (mLiveType == TYPE_RGBANDNIR_LIVE) {
+            mCamera_ir = Camera.open(1);
+            pt_ir.setCamera(mCamera_ir, PREFER_WIDTH, PERFER_HEIGH);
+            mCamera_ir.setPreviewCallback(new Camera.PreviewCallback() {
+                @Override
+                public void onPreviewFrame(byte[] data, Camera camera) {
+                    dealIr(data);
+                }
+            });
+        }
+
+
+//        CameraPreviewManagerSingal cpms = new CameraPreviewManagerSingal();
+//        cpms.setCameraFacing(CAMERA_FACING_FRONT);
+//        cpms.startPreview(mContext, mAutoCameraPreviewView_ir, 640, 480, new CameraDataCallback() {
+//            @Override
+//            public void onGetCameraData(byte[] data, Camera camera, int width, int height) {
+//
+//            }
+//        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mCamera_ir != null) {
+            mCamera_ir.setPreviewCallback(null);
+            mCamera_ir.stopPreview();
+            //pt_ir.release();
+            mCamera_ir.release();
+            mCamera_ir = null;
+        }
+    }
+
+    private void dealRgb(byte[] data, int width, int height) {
+
+        if (SingleBaseConfig.getBaseConfig().getType() == TYPE_NO_LIVE ||
+            SingleBaseConfig.getBaseConfig().getType() == TYPE_RGB_LIVE) {
+            FaceSDKManager.getInstance().onDetectCheck(data, null, null,
+                    height, width, mLiveType, new FaceDetectCallBack() {
+                        @Override
+                        public void onFaceDetectCallback(LivenessModel livenessModel) {
+                            // 输出结果
+                            checkCloseResult(livenessModel);
+                        }
+
+                        @Override
+                        public void onTip(int code, String msg) {
+                            displayTip(code, msg);
+                        }
+
+                        @Override
+                        public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
+                            showFrame(livenessModel);
+                        }
+                    });
+        } else if (SingleBaseConfig.getBaseConfig().getType() == TYPE_RGBANDNIR_LIVE) {
+            rgbData = data;
+            checkData();
+        }
+    }
+
+    private void dealIr(byte[] data) {
+        if (mLiveType == TYPE_NO_LIVE ||
+                mLiveType == TYPE_RGB_LIVE) {
+
+        } else if (mLiveType == TYPE_RGBANDNIR_LIVE) {
+            irData = data;
+            checkData();
+        }
+    }
+
+    private synchronized void checkData() {
+        if (rgbData != null && irData != null) {
+
+            FaceSDKManager.getInstance().onDetectCheck(rgbData, irData, null, PERFER_HEIGH,
+                    PREFER_WIDTH, TYPE_RGBANDNIR_LIVE, new FaceDetectCallBack() {
+                        @Override
+                        public void onFaceDetectCallback(LivenessModel livenessModel) {
+                            checkResult(livenessModel);
+                        }
+
+                        @Override
+                        public void onTip(int code, String msg) {
+                            //displayTip(1,msg);
+                        }
+
+                        @Override
+                        public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
+                            showFrame(livenessModel);
+                        }
+                    });
+            rgbData = null;
+            irData = null;
+        }
+    }
+
+    private void checkResult(final LivenessModel livenessModel) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (livenessModel == null) {
+                    mTrackText.setVisibility(View.GONE);
+                    mDetectText.setText("未检测到人脸");
+                    mDetectImage.setImageResource(R.mipmap.icon_face_);
+                    info_rl.setVisibility(View.GONE);
+                    return;
+                }
+//                BDFaceImageInstance image = livenessModel.getBdFaceImageInstance();
+//                if (image != null) {
+//                    mFaceDetectImageView.setImageBitmap(BitmapUtils.getInstaceBmp(image));
+//                }
+                float rgbLivenessScore = livenessModel.getRgbLivenessScore();
+                float irLivenessScore = livenessModel.getIrLivenessScore();
+                // 判断活体状态UI显示
+                if (rgbLivenessScore < mRgbLiveScore) {
+                    mTrackText.setVisibility(View.GONE);
+                    mDetectText.setText("活体检测未通过");
+                    mDetectText.setVisibility(View.VISIBLE);
+                    mDetectImage.setImageResource(R.mipmap.icon_face_);
+                }
+                if (irLivenessScore < mNirLiveScore) {
+                    mDetectText.setText("活体检测未通过");
+                    mDetectText.setVisibility(View.VISIBLE);
+                    mDetectImage.setImageResource(R.mipmap.icon_face_);
+                }
+
+                if (rgbLivenessScore > mRgbLiveScore && irLivenessScore > mNirLiveScore) {
+                    User user = livenessModel.getUser();
+                    if (user != null) {
+                        String absolutePath = FileUtils.getBatchImportSuccessDirectory()
+                                + "/" + user.getImageName();
+                        Bitmap bitmap = BitmapFactory.decodeFile(absolutePath);
+                        mDetectImage.setImageBitmap(bitmap);
+                        mTrackText.setVisibility(View.VISIBLE);
+                        mTrackText.setText("识别成功");
+                        mTrackText.setBackgroundColor(Color.rgb(66, 147, 136));
+                        mDetectText.setText("欢迎您， " + user.getUserName());
+                        info_rl.setVisibility(View.VISIBLE);
+
+                    } else {
+                        mTrackText.setVisibility(View.VISIBLE);
+                        mTrackText.setText("识别失败");
+                        mTrackText.setBackgroundColor(Color.RED);
+                        mDetectText.setText("搜索不到用户");
+                        mDetectText.setVisibility(View.VISIBLE);
+                        mDetectImage.setImageResource(R.mipmap.icon_face_);
+                    }
+                }
+
+                Log.i(TAG, String.format("检测 ：%s ms", livenessModel.getRgbDetectDuration()));
+                Log.i(TAG, String.format("RGB活体 ：%s ms", livenessModel.getRgbLivenessDuration()));
+                Log.i(TAG, String.format("RGB得分 ：%s", livenessModel.getRgbLivenessScore()));
+                Log.i(TAG, String.format("Ir活体 ：%s ms", livenessModel.getIrLivenessDuration()));
+                Log.i(TAG, String.format("Ir得分 ：%s", livenessModel.getIrLivenessScore()));
+                Log.i(TAG, String.format("特征抽取 ：%s ms", livenessModel.getFeatureDuration()));
+                Log.i(TAG, String.format("检索比对 ：%s ms", livenessModel.getCheckDuration()));
+                Log.i(TAG, String.format("总耗时 ：%s ms", livenessModel.getAllDetectDuration()));
+            }
+        });
     }
 
     private void checkCloseResult(final LivenessModel livenessModel) {
@@ -245,8 +424,8 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                             mDetectText.setText("搜索不到用户");
                             mDetectText.setVisibility(View.VISIBLE);
                             mDetectImage.setImageResource(R.mipmap.icon_face_);
-                        } else {
 
+                        } else {
                             String absolutePath = FileUtils.getBatchImportSuccessDirectory()
                                     + "/" + user.getImageName();
                             Bitmap bitmap = BitmapFactory.decodeFile(absolutePath);
