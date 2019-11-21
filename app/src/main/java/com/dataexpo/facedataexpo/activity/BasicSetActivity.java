@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.baidu.idl.main.facesdk.FaceAuth;
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.activity.set.FaceLivenessThresholdActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
 import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
 import com.dataexpo.facedataexpo.activity.set.RecognizeModleThresholdActivity;
@@ -93,16 +94,16 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.tv_detect_type_dspc:
             case R.id.tv_detect_type_value:
+                //startActivity(new Intent(mContext, FaceLivenessThresholdActivity.class));
                 break;
+
             case R.id.tv_depth_live_threshold_dspc:
             case R.id.tv_depth_live_threshold_value:
-
-                break;
             case R.id.tv_nir_live_threshold_dspc:
             case R.id.tv_nir_live_threshold_value:
-                break;
             case R.id.tv_rgb_live_threshold_dspc:
             case R.id.tv_rgb_live_threshold_value:
+                startActivity(new Intent(mContext, FaceLivenessThresholdActivity.class));
                 break;
             case R.id.tv_silent_live_type_value:
             case R.id.tv_basicset_silent_live_type_dspc:

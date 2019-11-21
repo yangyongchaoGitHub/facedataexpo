@@ -155,6 +155,7 @@
         app:layout_constraintWidth_percent="0.2" />
 
     <Button
+        android:id="@+id/btn_cameradisplayangle_save"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="保存"

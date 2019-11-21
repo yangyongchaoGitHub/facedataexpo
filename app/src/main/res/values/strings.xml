@@ -22,8 +22,11 @@
     <string name="silent_live_type">活体模式</string>
     <string name="feature_threshold_value">识别阈值</string>
     <string name="rgb_live_threshold">RGB活体阈值</string>
-    <string name="nir_live_threshold">NIR活体阈值 </string>
+    <string name="rgb_live_threshold_">RGB活体阈值:</string>
+    <string name="nir_live_threshold">NIR活体阈值</string>
+    <string name="nir_live_threshold_">NIR活体阈值:</string>
     <string name="depth_lice_threshold">Depth活体阈值</string>
+    <string name="depth_lice_threshold_">Depth活体阈值:</string>
     <string name="detect_type">检测形式</string>
     <string name="all_config">全部设置</string>
     <string name="device_id">设备硬件指纹</string>
@@ -47,4 +50,6 @@
     <string name="recognizeModelThreshold">识别模型阈值</string>
     <string name="recognizeModelThreshold_value">识别模型阈值:</string>
     <string name="recognizeModelThreshold_dspc">生活照和证件模型阈值已经都做过分值映射，官方推荐判断为同一个人的阈值为80分，详细的FAR和FRR映射关系请在SDK文档中查看</string>
+    <string name="faceliveness_threshold">活体检测阈值</string>
+    <string name="faceliveness_threshold_description">活体阈值用于判断是否活体通过，每种活体模型的阈值单独设定，可以根据此阈值来判断活体通过率和拒绝率。通常情况下，真人的活体得分极大接近于1，非活体极大接近于0.0，阈值设定视安全性而定</string>
 </resources>

@@ -47,6 +47,7 @@
         <activity android:name=".activity.set.MinFaceActivity"/>
         <activity android:name=".activity.set.FaceLivinessType"/>
         <activity android:name=".activity.set.RecognizeModleThresholdActivity"/>
+        <activity android:name=".activity.set.FaceLivenessThresholdActivity"/>
 
     </application>
 </manifest>

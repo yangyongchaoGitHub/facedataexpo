@@ -48,7 +48,7 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
                 break;
 
             case R.id.ll_debug_model:
-                startActivity(new Intent(mContext, DebugModelActivity.class));
+                //startActivity(new Intent(mContext, DebugModelActivity.class));
                 break;
 
             case R.id.tv_mirror:

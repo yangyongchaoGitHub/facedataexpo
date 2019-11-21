@@ -9,13 +9,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.dataexpo.facedataexpo.R;
 import com.dataexpo.facedataexpo.Utils.ConfigUtils;
+import com.dataexpo.facedataexpo.manager.FaceSDKManager;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 
-public class CameraDisplayAngleActivity extends BaseActivity {
-    private RadioButton cdaDisplayZeroAngle;
-    private RadioButton cdaDisplayNinetyAngle;
-    private RadioButton cdaDisplayOneHundredEighty;
-    private RadioButton cdaDisplayTwoHundredSeventy;
+public class CameraDisplayAngleActivity extends BaseActivity implements View.OnClickListener {
+    private RadioButton rb_0;
+    private RadioButton rb_90;
+    private RadioButton rb_180;
+    private RadioButton rb_270;
     private int zero = 0;
     private int ninety = 90;
     private int oneHundredEighty = 180;
@@ -27,89 +28,92 @@ public class CameraDisplayAngleActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cameradisplayangle);
-
-        //init();
+        initView();
+        initData();
     }
 
-//    public void init() {
-////        cdaDisplayZeroAngle = findViewById(R.id.cda_display_zero_angle);
-////        cdaDisplayNinetyAngle = findViewById(R.id.cda_display_ninety_angle);
-////        cdaDisplayOneHundredEighty = findViewById(R.id.cda_display_one_hundred_eighty);
-////        cdaDisplayTwoHundredSeventy = findViewById(R.id.cda_display_two_hundred_seventy);
-////        Button cdaSave = findViewById(R.id.cda_save);
-//
-//        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == zero) {
-//            cdaDisplayZeroAngle.setChecked(true);
-//        }
-//        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == ninety) {
-//            cdaDisplayNinetyAngle.setChecked(true);
-//        }
-//        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == oneHundredEighty) {
-//            cdaDisplayOneHundredEighty.setChecked(true);
-//        }
-//        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == twoHundredSeventy) {
-//            cdaDisplayTwoHundredSeventy.setChecked(true);
-//        }
-//
-//        cdaDisplayZeroAngle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cdaDisplayNinetyAngle.setChecked(false);
-//                cdaDisplayOneHundredEighty.setChecked(false);
-//                cdaDisplayTwoHundredSeventy.setChecked(false);
-//
-//            }
-//        });
-//
-//        cdaDisplayNinetyAngle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cdaDisplayZeroAngle.setChecked(false);
-//                cdaDisplayOneHundredEighty.setChecked(false);
-//                cdaDisplayTwoHundredSeventy.setChecked(false);
-//
-//            }
-//        });
-//
-//        cdaDisplayOneHundredEighty.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cdaDisplayZeroAngle.setChecked(false);
-//                cdaDisplayNinetyAngle.setChecked(false);
-//                cdaDisplayTwoHundredSeventy.setChecked(false);
-//
-//            }
-//        });
-//
-//        cdaDisplayTwoHundredSeventy.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                cdaDisplayZeroAngle.setChecked(false);
-//                cdaDisplayNinetyAngle.setChecked(false);
-//                cdaDisplayOneHundredEighty.setChecked(false);
-//
-//            }
-//        });
+    private void initView() {
+        rb_0 = findViewById(R.id.rb_0_angle);
+        rb_90 = findViewById(R.id.rb_90_angle);
+        rb_180 = findViewById(R.id.rb_180_angle);
+        rb_270 = findViewById(R.id.rb_270_angle);
+        rb_0.setOnClickListener(this);
+        rb_90.setOnClickListener(this);
+        rb_180.setOnClickListener(this);
+        rb_270.setOnClickListener(this);
+        findViewById(R.id.iv_cameradisplayangle_0).setOnClickListener(this);
+        findViewById(R.id.iv_cameradisplayangle_90).setOnClickListener(this);
+        findViewById(R.id.iv_cameradisplayangle_180).setOnClickListener(this);
+        findViewById(R.id.iv_cameradisplayangle_270).setOnClickListener(this);
+        findViewById(R.id.btn_cameradisplayangle_save).setOnClickListener(this);
+    }
 
-//        cdaSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (cdaDisplayZeroAngle.isChecked()) {
-//                    SingleBaseConfig.getBaseConfig().setVideoDirection(zero);
-//                }
-//                if (cdaDisplayNinetyAngle.isChecked()) {
-//                    SingleBaseConfig.getBaseConfig().setVideoDirection(ninety);
-//                }
-//                if (cdaDisplayOneHundredEighty.isChecked()) {
-//                    SingleBaseConfig.getBaseConfig().setVideoDirection(oneHundredEighty);
-//                }
-//                if (cdaDisplayTwoHundredSeventy.isChecked()) {
-//                    SingleBaseConfig.getBaseConfig().setVideoDirection(twoHundredSeventy);
-//                }
-//                ConfigUtils.modityJson();
-//                finish();
-//            }
-//        });
-    //}
+    public void initData() {
+
+        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == zero) {
+            rb_0.setChecked(true);
+        }
+        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == ninety) {
+            rb_90.setChecked(true);
+        }
+        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == oneHundredEighty) {
+            rb_180.setChecked(true);
+        }
+        if (SingleBaseConfig.getBaseConfig().getVideoDirection() == twoHundredSeventy) {
+            rb_270.setChecked(true);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cameradisplayangle_save:
+                if (rb_0.isChecked()) {
+                    SingleBaseConfig.getBaseConfig().setVideoDirection(zero);
+                }
+                if (rb_90.isChecked()) {
+                    SingleBaseConfig.getBaseConfig().setVideoDirection(ninety);
+                }
+                if (rb_180.isChecked()) {
+                    SingleBaseConfig.getBaseConfig().setVideoDirection(oneHundredEighty);
+                }
+                if (rb_270.isChecked()) {
+                    SingleBaseConfig.getBaseConfig().setVideoDirection(twoHundredSeventy);
+                }
+                ConfigUtils.modityJson();
+                FaceSDKManager.getInstance().initConfig();
+                finish();
+                break;
+
+
+            case R.id.iv_cameradisplayangle_0:
+                setChecked(rb_0);
+                break;
+
+            case R.id.rb_90_angle:
+            case R.id.iv_cameradisplayangle_90:
+                setChecked(rb_90);
+                break;
+
+            case R.id.rb_180_angle:
+            case R.id.iv_cameradisplayangle_180:
+                setChecked(rb_180);
+                break;
+
+            case R.id.rb_270_angle:
+            case R.id.iv_cameradisplayangle_270:
+                setChecked(rb_270);
+                break;
+
+                default:
+        }
+    }
+
+    private void setChecked(RadioButton checked) {
+        rb_0.setChecked(false);
+        rb_90.setChecked(false);
+        rb_180.setChecked(false);
+        rb_270.setChecked(false);
+        checked.setChecked(true);
+    }
 }

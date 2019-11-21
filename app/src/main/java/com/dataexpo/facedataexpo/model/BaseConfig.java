@@ -13,6 +13,9 @@ public class BaseConfig {
     public final static int THRESHOLD_MIN = 0;
     public final static int THRESHOLD_MAX = 100;
 
+    public final static int THRESHOLD_LIVENESS_MIN = 0;
+    public final static int THRESHOLD_LIVENESS_MAX = 1;
+
     // RGB检测帧回显
     private Boolean display = true;
     // RGB预览Y轴转向falese为0，true为180    镜像
