@@ -52,4 +52,7 @@
     <string name="recognizeModelThreshold_dspc">生活照和证件模型阈值已经都做过分值映射，官方推荐判断为同一个人的阈值为80分，详细的FAR和FRR映射关系请在SDK文档中查看</string>
     <string name="faceliveness_threshold">活体检测阈值</string>
     <string name="faceliveness_threshold_description">活体阈值用于判断是否活体通过，每种活体模型的阈值单独设定，可以根据此阈值来判断活体通过率和拒绝率。通常情况下，真人的活体得分极大接近于1，非活体极大接近于0.0，阈值设定视安全性而定</string>
+    <string name="cameraDisplayAngle">摄像头视频流回显角度设置</string>
+    <string name="description">说明</string>
+    <string name="rotation_angle">选择旋转角度（顺时针方向）</string>
 </resources>

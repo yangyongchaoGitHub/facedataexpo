@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.dataexpo.facedataexpo.R;
-import com.dataexpo.facedataexpo.activity.DebugModelActivity;
 
 public class SettingMainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = SettingMainActivity.class.getSimpleName();
@@ -22,66 +21,50 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initView() {
-        findViewById(R.id.ll_debug_model).setOnClickListener(this);
-        findViewById(R.id.ll_mirror).setOnClickListener(this);
-        findViewById(R.id.ll_min_face).setOnClickListener(this);
-        findViewById(R.id.ll_face_detect_angle).setOnClickListener(this);
-        findViewById(R.id.ll_camera_display_angle).setOnClickListener(this);
-        findViewById(R.id.ll_quality_control).setOnClickListener(this);
-        findViewById(R.id.ll_face_liveness_type).setOnClickListener(this);
-        findViewById(R.id.ll_face_liveness_threshold).setOnClickListener(this);
-        findViewById(R.id.ll_recognize_modle_threshold).setOnClickListener(this);
-        findViewById(R.id.ll_detect_follow_starategy).setOnClickListener(this);
-        findViewById(R.id.ll_setting_auth).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_min_face).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_user_auth).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_camera_display_angle).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_faceliveness).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_recognize_model_threshold).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_recognize_model).setOnClickListener(this);
         findViewById(R.id.btn_setting_main_back).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            // 最小识别人脸像素设置
+            case R.id.tv_setting_main_min_face:
+                startActivity(new Intent(mContext, MinFaceActivity.class));
+                break;
+
+                //授权激活界面
+            case R.id.tv_setting_main_user_auth:
+                startActivity(new Intent(mContext, FaceAuthActivity.class));
+                break;
+
             case R.id.btn_setting_main_back:
                 finish();
                 break;
 
-            case R.id.ll_setting_auth:
-                startActivity(new Intent(mContext, FaceAuthActivity.class));
-                break;
-
-            case R.id.ll_debug_model:
-                //startActivity(new Intent(mContext, DebugModelActivity.class));
-                break;
-
-            case R.id.tv_mirror:
-                break;
-
-                // 最小识别人脸像素设置
-            case R.id.ll_min_face:
-                startActivity(new Intent(mContext, MinFaceActivity.class));
-                break;
-
-            case R.id.ll_face_detect_angle:
-                break;
-
-            case R.id.ll_camera_display_angle:
+            case R.id.tv_setting_main_camera_display_angle:
                 // 摄像头视频流回显角度
                 startActivity(new Intent(mContext, CameraDisplayAngleActivity.class));
                 break;
 
-            case R.id.ll_quality_control:
-                break;
-
-            case R.id.ll_face_liveness_type:
+                //镜头及活体模式设置
+            case R.id.tv_setting_main_faceliveness:
                 startActivity(new Intent(mContext, FaceLivinessType.class));
                 break;
 
-            case R.id.ll_face_liveness_threshold:
+                //识别模型阈值
+            case R.id.tv_setting_main_recognize_model_threshold:
                 startActivity(new Intent(this, RecognizeModleThresholdActivity.class));
                 break;
 
-            case R.id.ll_recognize_modle_threshold:
-                break;
-
-            case R.id.ll_detect_follow_starategy:
+                //活体检测阈值
+            case R.id.tv_setting_main_recognize_model:
+                startActivity(new Intent(mContext, FaceLivenessThresholdActivity.class));
                 break;
 
                 default:

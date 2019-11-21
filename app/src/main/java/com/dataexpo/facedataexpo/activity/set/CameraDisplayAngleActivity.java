@@ -22,8 +22,6 @@ public class CameraDisplayAngleActivity extends BaseActivity implements View.OnC
     private int oneHundredEighty = 180;
     private int twoHundredSeventy = 270;
 
-    ConstraintLayout cl;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +47,6 @@ public class CameraDisplayAngleActivity extends BaseActivity implements View.OnC
     }
 
     public void initData() {
-
         if (SingleBaseConfig.getBaseConfig().getVideoDirection() == zero) {
             rb_0.setChecked(true);
         }
