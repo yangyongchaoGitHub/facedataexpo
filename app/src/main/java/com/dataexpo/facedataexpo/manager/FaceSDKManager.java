@@ -2,6 +2,7 @@ package com.dataexpo.facedataexpo.manager;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.baidu.idl.main.facesdk.FaceAuth;
 import com.baidu.idl.main.facesdk.FaceDetect;
@@ -215,8 +216,7 @@ public class FaceSDKManager {
 
                 // 检查函数调用，返回检测结果
                 long startDetectTime = System.currentTimeMillis();
-                FaceInfo[] faceInfos = FaceSDKManager.getInstance().getFaceDetect()
-                        .track(BDFaceSDKCommon.DetectType.DETECT_VIS, rgbInstance);
+                FaceInfo[] faceInfos = faceDetect.track(BDFaceSDKCommon.DetectType.DETECT_VIS, rgbInstance);
 
                 livenessModel.setRgbDetectDuration(System.currentTimeMillis() - startDetectTime);
                 //LogUtils.e(TIME_TAG, "detect vis time = " + livenessModel.getRgbDetectDuration());
@@ -428,8 +428,10 @@ public class FaceSDKManager {
 
         byte[] feature = new byte[512];
         long startFeatureTime = System.currentTimeMillis();
+
         float featureSize = FaceSDKManager.getInstance().getFaceFeature().feature(
                 BDFaceSDKCommon.FeatureType.BDFACE_FEATURE_TYPE_LIVE_PHOTO, rgbInstance, landmark, feature);
+
         livenessModel.setFeatureDuration(System.currentTimeMillis() - startFeatureTime);
         LogUtils.e(TIME_TAG, "feature live time = " + livenessModel.getFeatureDuration());
         livenessModel.setFeature(feature);
@@ -448,6 +450,10 @@ public class FaceSDKManager {
             ArrayList<Feature> featureResult = FaceSDKManager.getInstance().getFaceFeature().featureSearch(feature,
                     BDFaceSDKCommon.FeatureType.BDFACE_FEATURE_TYPE_LIVE_PHOTO,
                     1, true);
+            if (featureResult != null) {
+                Log.i(TAG, "检索结果个数：" + featureResult.size());
+            }
+
             // TODO 返回top num = 1 个数据集合，此处可以任意设置，会返回比对从大到小排序的num 个数据集合
             if (featureResult != null && featureResult.size() > 0) {
                 // 获取第一个数据

@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.baidu.idl.main.facesdk.FaceInfo;
+import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
 import com.baidu.idl.main.facesdk.model.BDFaceSDKCommon;
 import com.baidu.idl.main.facesdk.utils.ZipUtils;
 import com.dataexpo.facedataexpo.Utils.FileUtils;
@@ -11,6 +13,8 @@ import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.listener.OnImportListener;
+import com.dataexpo.facedataexpo.model.LivenessModel;
+import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 import com.dataexpo.facedataexpo.model.User;
 
 import java.io.File;
@@ -118,38 +122,58 @@ public class ImportFileManager {
                         ret = FaceApi.getInstance().getFeature(bitmap, bytes,
                                 BDFaceSDKCommon.FeatureType.BDFACE_FEATURE_TYPE_LIVE_PHOTO);
 
-                        Log.i(TAG, "live_photo = " + ret);
+                        Log.i(TAG, "live_photo gallery = " + ret);
 
                         if (ret == -1) {
                             LogUtils.e(TAG, "：未检测到人脸，可能原因：人脸太小 ");
 
-                        } else if (ret == 128) {
-                            // 将用户信息和用户组信息保存到数据库
-                            importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager("default",
-                                    userName, picName, null, bytes);
+                        } else if (ret == 128f) {
+                            // 筛选不存在人脸库中的用户
+                            Log.i(TAG, "132 ");
+                            BDFaceImageInstance imageInstance = new BDFaceImageInstance(bitmap);
+                            Log.i(TAG, "134 ");
+                            LivenessModel livenessModel = new LivenessModel();
+                            Log.i(TAG, "136 ");
+                            //TODO: bug in baidu native!!!!!!!!!   需要重启工程才能检测当前注册的用户
+                            FaceInfo[] faceInfos = FaceSDKManager.getInstance().getFaceDetect()
+                                    .track(BDFaceSDKCommon.DetectType.DETECT_VIS, imageInstance);
+                            Log.i(TAG, "139 faceInfos: " + faceInfos.length);
 
-                            // 保存数据库成功
-                            if (importDBSuccess) {
-                                // 保存图片到注册用户图片路径
-                                File facePicDir = FileUtils.getBatchImportSuccessDirectory();
+                            FaceSDKManager.getInstance().onFeatureCheck(imageInstance, faceInfos[0].landmarks,
+                                    livenessModel, 3);
 
-                                if (facePicDir != null) {
-                                    File savePicPath = new File(facePicDir, picName);
-
-                                    if (FileUtils.saveBitmap(savePicPath, bitmap)) {
-                                        LogUtils.i(TAG, "图片保存成功");
-                                        if (mImportListener != null) {
-                                            mImportListener.showToastMessage("保存成功！" + userName);
-                                        }
-
-                                    } else {
-                                        LogUtils.e(TAG, "：图片保存失败");
-                                    }
-                                }
+                            if (livenessModel.getUser() != null) {
+                                Log.i(TAG, "人脸库已存在该用户");
                             } else {
-                                LogUtils.e(TAG, "：保存到数据库失败");
+                                Log.i(TAG, "人脸库无此用户");
+                                // 将用户信息和用户组信息保存到数据库
+                                importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager("default",
+                                        userName, picName, null, bytes);
 
+                                // 保存数据库成功
+                                if (importDBSuccess) {
+                                    // 保存图片到注册用户图片路径
+                                    File facePicDir = FileUtils.getBatchImportSuccessDirectory();
+
+                                    if (facePicDir != null) {
+                                        File savePicPath = new File(facePicDir, picName);
+
+                                        if (FileUtils.saveBitmap(savePicPath, bitmap)) {
+                                            LogUtils.i(TAG, "图片保存成功");
+                                            if (mImportListener != null) {
+                                                mImportListener.showToastMessage("保存成功！" + userName);
+                                            }
+
+                                        } else {
+                                            LogUtils.e(TAG, "：图片保存失败");
+                                        }
+                                    }
+                                } else {
+                                    LogUtils.e(TAG, "：保存到数据库失败");
+
+                                }
                             }
+
                         } else {
                             LogUtils.e(TAG, "：未检测到人脸");
                         }

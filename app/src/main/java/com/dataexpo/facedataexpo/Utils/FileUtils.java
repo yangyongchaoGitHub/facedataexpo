@@ -106,7 +106,7 @@ public class FileUtils {
         File sdRootFile = getSDRootFile();
         File file = null;
         if (sdRootFile != null && sdRootFile.exists()) {
-            file = new File(sdRootFile, "Success-Import");
+            file = new File(sdRootFile, "Success-Import-DataExpo");
             if (!file.exists()) {
                 file.mkdirs();
             }

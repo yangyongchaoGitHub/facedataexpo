@@ -53,5 +53,3 @@ public class Utils {
         return dateFormat.format(date);
     }
 }
-
-

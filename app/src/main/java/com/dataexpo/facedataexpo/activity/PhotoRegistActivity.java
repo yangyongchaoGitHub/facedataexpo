@@ -96,7 +96,6 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
             case R.id.btn_cat_photo:
                 LogUtils.i(TAG, "cat_photo!!");
                 in_get_image = IN_PHOTO;
-                //CameraPreviewManager.getInstance().stopPreview();
                 rl_photo_sensor.setVisibility(View.VISIBLE);
                 btn_cat_photo.setVisibility(View.INVISIBLE);
                 CameraPreviewManager.getInstance().waitPreview();
@@ -122,6 +121,13 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
                 break;
             default:
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //回收资源
+        CameraPreviewManager.getInstance().stopPreview();
     }
 
     @Override

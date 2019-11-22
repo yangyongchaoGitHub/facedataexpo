@@ -46,6 +46,8 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
     private ImageAdapter mImageAdapter;
     private boolean isShowCheck = false;
     private List<ImageSrc> mShowList;
+    //网格列数
+    private final static int TABLE_ROWS = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,7 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
         findViewById(R.id.btn_add_gallery_select_regist).setOnClickListener(this);
         recycler = findViewById(R.id.recycler_gallery_images);
         //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 4);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, TABLE_ROWS);
         recycler.setLayoutManager(layoutManager);
 
         mImageAdapter = new ImageAdapter();

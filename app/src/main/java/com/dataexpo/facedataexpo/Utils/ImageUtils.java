@@ -44,7 +44,6 @@ public class ImageUtils {
                 }
                 if (index == 0) {
                     // do nothing
-                    Log.e("qing", "");
                 } else {
                     Uri uri_temp = Uri.parse("content://media/external/images/media/" + index);
                     if (uri_temp != null) {
@@ -107,7 +106,7 @@ public class ImageUtils {
             }
             stitchBmp.copyPixelsFromBuffer(ByteBuffer.wrap(rgba));
         } catch (Exception e) {
-            Log.e("qing", String.valueOf(e.getStackTrace()));
+            Log.e("iuiu", String.valueOf(e.getStackTrace()));
         }
         return stitchBmp;
     }
