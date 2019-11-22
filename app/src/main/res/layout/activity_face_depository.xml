@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tv_face_depository_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/bgsome"
+        android:gravity="center"
+        android:text="@string/facedepository"
+        android:textColor="@color/black"
+        android:textSize="@dimen/x60"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btn_face_depository_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/back"/>
+    <Button
+        android:id="@+id/btn_face_depository_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/x40"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_face_depository_title"
+        android:text="@string/back"/>
 
-        <TextView
-            android:id="@+id/btn_face_depository_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/cancel"
-            android:visibility="invisible"
-            android:layout_toRightOf="@+id/btn_face_depository_back"
-            android:layout_marginLeft="10dp"
-            android:textSize="20dp"/>
+    <TextView
+        android:id="@+id/btn_face_depository_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/btn_face_depository_back"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_face_depository_back"
+        android:textSize="@dimen/x40"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_centerHorizontal="true"
-            android:text="@string/facedepository" />
+    <TextView
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_face_depository_title"
+        android:text="+"
+        android:layout_marginEnd="@dimen/x20"
+        android:textSize="@dimen/x80"/>
 
-        <TextView
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="+"
-            android:textSize="50dp"/>
-
-        <TextView
-            android:id="@+id/btn_face_depository_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
-            android:visibility="invisible"
-            android:layout_toStartOf="@+id/btn_add"/>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/btn_face_depository_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:visibility="invisible"
+        android:textSize="@dimen/x40"
+        app:layout_constraintEnd_toStartOf="@+id/btn_add"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="@dimen/x20"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_face_depository_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_info_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/rl_title">
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_face_depository_title"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

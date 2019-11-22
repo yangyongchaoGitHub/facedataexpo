@@ -17,7 +17,6 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_setting_main);
         mContext = this;
         initView();
-
     }
 
     private void initView() {

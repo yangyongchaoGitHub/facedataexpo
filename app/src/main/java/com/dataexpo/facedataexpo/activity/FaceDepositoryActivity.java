@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +26,24 @@ import com.dataexpo.facedataexpo.Utils.ToastUtils;
 import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.api.FaceApi;
+import com.dataexpo.facedataexpo.listener.OnDialogClickListener;
 import com.dataexpo.facedataexpo.listener.OnItemClickListener;
 import com.dataexpo.facedataexpo.listener.OnItemLongClickListener;
+import com.dataexpo.facedataexpo.manager.ImportFileManager;
 import com.dataexpo.facedataexpo.manager.UserInfoManager;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.Utils.Utils;
+import com.dataexpo.facedataexpo.view.LoginDialog;
+import com.dataexpo.facedataexpo.view.RegistSelectDialog;
 
 import java.util.List;
 
-public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener {
+import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_DEPOSITORY;
+import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_GALLERY;
+import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_PHOTO;
+
+public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, OnDialogClickListener {
     private static final String TAG = FaceDepositoryActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private Context mContext;
@@ -45,6 +54,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private boolean isShowCheck = false;
     private TextView btn_cancel;
     private TextView btn_delete;
+    private RegistSelectDialog mDialog;
 
     private String mGroupId = "default";
     private ButtonState mButtonState = ButtonState.BATCH_OPERATION;             // 当前按钮状态
@@ -63,7 +73,8 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         switch (v.getId()) {
             case R.id.btn_add:
                 //进行注册方式选择
-                startActivity(new Intent(this, FaceRegistActivity.class));
+                //startActivity(new Intent(this, FaceRegistActivity.class));
+                mDialog.show();
                 break;
 
             case R.id.btn_face_depository_cancel:
@@ -128,6 +139,25 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         btn_delete.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onDialogItemClick(View view) {
+
+    }
+
+    @Override
+    public void onDialogItemClick(int i) {
+        Log.i(TAG, "onDialogItemClick: " + i);
+        if (REGIST_BY_PHOTO == i) {
+            startActivity(new Intent(this, PhotoRegistActivity.class));
+        } else if (REGIST_BY_GALLERY == i) {
+            startActivity(new Intent(this, GallerySelectRegistActivity.class));
+        } else if (REGIST_BY_DEPOSITORY == i) {
+            ToastUtils.toast(this, "搜索中，请稍后----  ------  ---");
+            ImportFileManager.getInstance().batchImport();
+        }
+        mDialog.dismiss();
+    }
+
     private enum ButtonState {
         BATCH_OPERATION,
         ALL_SELECT
@@ -164,6 +194,10 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         btn_delete.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
 
+        mDialog = new RegistSelectDialog(this);
+        mDialog.setDialogClickListener(this);
+        mDialog.setCanceledOnTouchOutside(true);
+        //mDialog.setCancelable(false);
     }
 
     private void updateDeleteUI(boolean needDelete) {
