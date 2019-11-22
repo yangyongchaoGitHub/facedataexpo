@@ -540,6 +540,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        CameraPreviewManager.getInstance().stopPreview();
         ImportFileManager.getInstance().release();
     }
 

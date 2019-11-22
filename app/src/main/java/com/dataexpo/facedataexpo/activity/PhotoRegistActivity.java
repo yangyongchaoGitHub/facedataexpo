@@ -2,6 +2,7 @@ package com.dataexpo.facedataexpo.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceInfo;
 import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
@@ -33,6 +36,7 @@ import com.dataexpo.facedataexpo.manager.UserInfoManager;
 import com.dataexpo.facedataexpo.model.BaseConfig;
 import com.dataexpo.facedataexpo.model.LivenessModel;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
+import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.LoginDialog;
 import com.dataexpo.facedataexpo.view.RegistUserDialog;
 
@@ -40,6 +44,7 @@ import java.io.File;
 
 import static com.dataexpo.facedataexpo.manager.UserInfoManager.NAME_EXIST;
 import static com.dataexpo.facedataexpo.manager.UserInfoManager.NAME_NULL;
+import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_NO_LIVE;
 
 public class PhotoRegistActivity extends BaseActivity implements View.OnClickListener, LoginDialog.OnDialogClickListener {
     // 图片越大，性能消耗越大，也可以选择640*480， 1280*720
@@ -65,6 +70,7 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
     private RegistUserDialog mDialog;
     private Bitmap rgbBitmap = null;
     private String uName;
+    private TextView tv_track;
 
     private int in_get_image = INIT;
 
@@ -90,24 +96,28 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
             case R.id.btn_cat_photo:
                 LogUtils.i(TAG, "cat_photo!!");
                 in_get_image = IN_PHOTO;
-                CameraPreviewManager.getInstance().stopPreview();
+                //CameraPreviewManager.getInstance().stopPreview();
                 rl_photo_sensor.setVisibility(View.VISIBLE);
                 btn_cat_photo.setVisibility(View.INVISIBLE);
+                CameraPreviewManager.getInstance().waitPreview();
+                //TODO:需要判断在检测人脸时,没有重新开始摄像机
+                //btn_cancel.setEnabled(false);
+                tv_track.setVisibility(View.GONE);
                 break;
 
             case R.id.btn_regist_cancel:
                 LogUtils.i(TAG, "restart camera!!!!!!");
-                //startTestCloseDebugRegisterFunction();
-                //in_get_image = IN_CAMERA;
-//                onResume();
-//                btn_cat_photo.setVisibility(View.VISIBLE);
-//                rl_photo_sensor.setVisibility(View.INVISIBLE);
-//                mAutoCameraPreviewView.invalidate();
-                finish();
+                CameraPreviewManager.getInstance().stopWaitPreview();
+                btn_cat_photo.setVisibility(View.VISIBLE);
+                rl_photo_sensor.setVisibility(View.INVISIBLE);
+                in_get_image = IN_CAMERA;
+                regist_image = null;
                 break;
 
             case R.id.btn_regist_ok:
-                faceDetect();
+                //先进行人脸对比，查看人脸库中是否有该用户
+                detectCheck(regist_image, regist_width, regist_height);
+                //faceDetect();
                 //finish();
                 break;
             default:
@@ -144,6 +154,7 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
         mDialog.setDialogClickListener(this);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.setCancelable(false);
+        tv_track = findViewById(R.id.tv_photo_regist_track);
     }
 
     //进行注册
@@ -230,7 +241,7 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onFaceDetectCallback(LivenessModel livenessModel) {
                 // 做过滤
-                //boolean isFilterSuccess = faceSizeFilter(livenessModel.getFaceInfo(), regist_width, regist_height);
+                boolean isFilterSuccess = faceSizeFilter(livenessModel.getFaceInfo(), regist_width, regist_height);
                 //if (isFilterSuccess) {
                     // 展示model
                     checkResult(livenessModel);
@@ -239,12 +250,10 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onTip(int code, final String msg) {
-
             }
 
             @Override
             public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
-
             }
         });
     }
@@ -278,33 +287,84 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
                 PREFER_WIDTH, PERFER_HEIGH, new CameraDataCallback() {
                     @Override
                     public void onGetCameraData(byte[] data, Camera camera, int width, int height) {
-
                         if (in_get_image == IN_CAMERA) {
                             regist_image = data;
                             regist_width = width;
                             regist_height = height;
+
+                            // 摄像头预览数据进行人脸检测
+                            detectCheck(data, width, height);
                         }
-//                        // 摄像头预览数据进行人脸检测
-//                        FaceSDKManager.getInstance().onDetectCheck(data, null, null,
-//                                height, width, mLiveType, new FaceDetectCallBack() {
-//                                    @Override
-//                                    public void onFaceDetectCallback(LivenessModel livenessModel) {
-//                                        // 输出结果
-//                                        //checkCloseResult(livenessModel);
-//                                    }
-//
-//                                    @Override
-//                                    public void onTip(int code, String msg) {
-//                                        //displayTip(code, msg);
-//                                    }
-//
-//                                    @Override
-//                                    public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
-//                                        //showFrame(livenessModel);
-//                                    }
-//                                });
                     }
                 });
+    }
+
+    private void detectCheck(byte[] data, int width, int height) {
+        FaceSDKManager.getInstance().onDetectCheck(data, null, null,
+                height, width, TYPE_NO_LIVE, new FaceDetectCallBack() {
+                    @Override
+                    public void onFaceDetectCallback(LivenessModel livenessModel) {
+                        // 输出结果
+                        checkCloseResult(livenessModel);
+                    }
+
+                    @Override
+                    public void onTip(int code, String msg) {
+                        //displayTip(code, msg);
+                    }
+
+                    @Override
+                    public void onFaceDetectDarwCallback(LivenessModel livenessModel) {
+                        //showFrame(livenessModel);
+                    }
+                });
+    }
+
+    private void checkCloseResult(final LivenessModel livenessModel) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (livenessModel == null || livenessModel.getFaceInfo() == null) {
+                    //Toast.makeText(mContext, "未检测到人脸", Toast.LENGTH_SHORT).show();
+                    if (IN_PHOTO == in_get_image) {
+                        Toast.makeText(mContext, "未检测到人脸", Toast.LENGTH_SHORT).show();
+                    } else {
+                        tv_track.setVisibility(View.GONE);
+                    }
+                    tv_track.setText("未检测到人脸");
+                    tv_track.setVisibility(View.VISIBLE);
+                    return;
+
+                } else {
+                    //if (mLiveType == 1) {
+                        User user = livenessModel.getUser();
+                        if (user == null) {
+                            if (IN_PHOTO == in_get_image) {
+                                faceDetect();
+                                //在拍照之后 检测到人脸库中没有改人脸则可以进行注册动作
+                            }
+                        } else {
+                            //识别成功，人脸库中已存在该用户
+                            if (IN_PHOTO == in_get_image) {
+                                Toast.makeText(mContext, "人脸库中已存在用户", Toast.LENGTH_SHORT).show();
+                            }
+                            tv_track.setText("人脸库中已存在用户");
+                            tv_track.setVisibility(View.VISIBLE);
+                        }
+                    //} else {
+//                        float rgbLivenessScore = livenessModel.getRgbLivenessScore();
+//                        if (rgbLivenessScore < mRgbLiveScore) {
+                                //活体检测失败
+//                        } else {
+//                            } else {
+//
+//                            }
+//                        }
+                    //}
+                }
+            }
+        });
+        //btn_cancel.setEnabled(true);
     }
 
     // 人脸大小顾虑

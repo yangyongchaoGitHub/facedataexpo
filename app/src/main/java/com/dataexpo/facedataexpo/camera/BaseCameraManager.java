@@ -212,6 +212,31 @@ public class BaseCameraManager {
     }
 
     /**
+     * 暂停预览
+     */
+    public void waitPreview() {
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
+    }
+
+    public void stopWaitPreview() {
+        if (mCamera != null) {
+            mCamera.startPreview();
+            mCamera.setPreviewCallback(new Camera.PreviewCallback() {
+                @Override
+                public void onPreviewFrame(byte[] bytes, Camera camera) {
+                    if (mCameraDataCallback != null) {
+                        mCameraDataCallback.onGetCameraData(bytes, camera,
+                                videoWidth, videoHeight);
+                    }
+                }
+            });
+        }
+
+    }
+
+    /**
      * 关闭预览
      */
     public void stopPreview() {
