@@ -29,6 +29,7 @@ import java.util.concurrent.Future;
 
 public class ImportFileManager {
     private static final String TAG = "ImportFileManager";
+    public static final String GROUP_DEFAULT = "default";
 
     private Future mFuture;
     private ExecutorService mExecutorService;
@@ -95,6 +96,10 @@ public class ImportFileManager {
      *
      */
     public void asyncImportByGallery(final List<String> images) {
+        mFinishCount = 0;
+        mSuccessCount = 0;
+        mFailCount = 0;
+
         if (mExecutorService == null) {
             mExecutorService = Executors.newSingleThreadExecutor();
         }
@@ -106,8 +111,11 @@ public class ImportFileManager {
                 float ret;
                 boolean importDBSuccess;
                 String picName;
+                boolean mSuccess = false;
 
                 for (int i = 0; i < images.size(); i++) {
+                    mFinishCount++;
+                    mFailCount++;
                     // 根据图片的路径将图片转成Bitmap
                     Bitmap bitmap = BitmapFactory.decodeFile(images.get(i));
 
@@ -126,56 +134,25 @@ public class ImportFileManager {
 
                         if (ret == -1) {
                             LogUtils.e(TAG, "：未检测到人脸，可能原因：人脸太小 ");
+                            //mImportListener.showToastMessage("导入数据的文件夹没有数据");
 
                         } else if (ret == 128f) {
-                            // 筛选不存在人脸库中的用户
-                            Log.i(TAG, "132 ");
-                            BDFaceImageInstance imageInstance = new BDFaceImageInstance(bitmap);
-                            Log.i(TAG, "134 ");
-                            LivenessModel livenessModel = new LivenessModel();
-                            Log.i(TAG, "136 ");
-                            //TODO: bug in baidu native!!!!!!!!!   需要重启工程才能检测当前注册的用户
-                            FaceInfo[] faceInfos = FaceSDKManager.getInstance().getFaceDetect()
-                                    .track(BDFaceSDKCommon.DetectType.DETECT_VIS, imageInstance);
-                            Log.i(TAG, "139 faceInfos: " + faceInfos.length);
-
-                            FaceSDKManager.getInstance().onFeatureCheck(imageInstance, faceInfos[0].landmarks,
-                                    livenessModel, 3);
-
-                            if (livenessModel.getUser() != null) {
-                                Log.i(TAG, "人脸库已存在该用户");
-                            } else {
-                                Log.i(TAG, "人脸库无此用户");
-                                // 将用户信息和用户组信息保存到数据库
-                                importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager("default",
-                                        userName, picName, null, bytes);
-
-                                // 保存数据库成功
-                                if (importDBSuccess) {
-                                    // 保存图片到注册用户图片路径
-                                    File facePicDir = FileUtils.getBatchImportSuccessDirectory();
-
-                                    if (facePicDir != null) {
-                                        File savePicPath = new File(facePicDir, picName);
-
-                                        if (FileUtils.saveBitmap(savePicPath, bitmap)) {
-                                            LogUtils.i(TAG, "图片保存成功");
-                                            if (mImportListener != null) {
-                                                mImportListener.showToastMessage("保存成功！" + userName);
-                                            }
-
-                                        } else {
-                                            LogUtils.e(TAG, "：图片保存失败");
-                                        }
-                                    }
-                                } else {
-                                    LogUtils.e(TAG, "：保存到数据库失败");
-
-                                }
-                            }
+                            mSuccess = faceImport(bitmap, userName, picName, null, bytes);
 
                         } else {
                             LogUtils.e(TAG, "：未检测到人脸");
+                        }
+
+                        //计数
+                        if (mSuccess) {
+                            mFailCount--;
+                            mSuccessCount++;
+                        }
+
+                        Log.i(TAG, "FinishCount: " + mFinishCount + " successCount: " + mSuccessCount + " failcount: " + mFailCount);
+
+                        if (mImportListener != null) {
+                            mImportListener.onImporting(mFinishCount, mSuccessCount, mFailCount, 0);
                         }
 
                         // 图片回收
@@ -235,7 +212,7 @@ public class ImportFileManager {
                     // 如果该目录下没有文件，则提示获取图片失败
                     if (files == null) {
                         if (mImportListener != null) {
-                            mImportListener.showToastMessage("获取图片失败");
+                            mImportListener.showToastMessage("获取图片失败，不存在图片文件");
                         }
                         return;
                     }
@@ -288,10 +265,23 @@ public class ImportFileManager {
                             mFailCount++;
                             continue;
                         }
+
                         String groupName = picNames[1];   // 组名
                         String userName = picNames[0];    // 用户名
 
                         boolean success = false;
+
+                        // 判断姓名是否有效
+                        String nameResult = FaceApi.getInstance().isValidName(userName);
+                        if (!"0".equals(nameResult)) {
+                            Log.i(TAG, "姓名无效： " + nameResult);
+                            mFinishCount++;
+                            mFailCount++;
+                            // 更新进度
+                            updateProgress(mFinishCount, mSuccessCount, mFailCount,
+                                    ((float) mFinishCount / (float) mTotalCount));
+                            continue;
+                        }
 
                         // 根据姓名查询数据库与文件中对应的姓名是否相等，如果相等，则直接过滤
                         List<User> listUsers = FaceApi.getInstance().getUserListByUserName(groupName, userName);
@@ -301,18 +291,6 @@ public class ImportFileManager {
                                 mImportListener.showToastMessage("与之前图片名称相同");
                             }
 
-                            mFinishCount++;
-                            mFailCount++;
-                            // 更新进度
-                            updateProgress(mFinishCount, mSuccessCount, mFailCount,
-                                    ((float) mFinishCount / (float) mTotalCount));
-                            continue;
-                        }
-
-                        // 判断姓名是否有效
-                        String nameResult = FaceApi.getInstance().isValidName(userName);
-                        if (!"0".equals(nameResult)) {
-                            Log.i(TAG, nameResult);
                             mFinishCount++;
                             mFailCount++;
                             // 更新进度
@@ -339,32 +317,8 @@ public class ImportFileManager {
                                     mImportListener.showToastMessage("未检测到人脸，可能原因：人脸太小 ");
                                 }
                             } else if (ret == 128) {
-                                // 将用户信息和用户组信息保存到数据库
-                                boolean importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager(groupName,
-                                        userName, picName, null, bytes);
+                                success = faceImport(bitmap, userName, picName, null, bytes);
 
-                                // 保存数据库成功
-                                if (importDBSuccess) {
-                                    // 保存图片到新目录中
-                                    File facePicDir = FileUtils.getBatchImportSuccessDirectory();
-                                    if (facePicDir != null) {
-                                        File savePicPath = new File(facePicDir, picName);
-                                        if (FileUtils.saveBitmap(savePicPath, bitmap)) {
-                                            Log.i(TAG, "图片保存成功");
-                                            success = true;
-                                        } else {
-                                            if (mImportListener != null) {
-                                                mImportListener.showToastMessage("图片保存失败 ");
-                                            }
-                                            //Log.i(TAG, "图片保存失败");
-                                        }
-                                    }
-                                } else {
-                                    //Log.e(TAG, picName + "：保存到数据库失败");
-                                    if (mImportListener != null) {
-                                        mImportListener.showToastMessage("保存到数据库失败 ");
-                                    }
-                                }
                             } else {
                                 if (mImportListener != null) {
                                     mImportListener.showToastMessage("未检测到人脸 ");
@@ -413,6 +367,64 @@ public class ImportFileManager {
             }
         });
     }
+
+
+    /**
+     *  人脸模板特这值获取成功
+     *
+     *  检测是否存在重复
+     * @param bitmap  图片实体
+     * @param userName 用户明个
+     * @param userInfo 用户信息
+     * @param picName 图片名称
+     * @param bytes 特征值
+     *
+     */
+    private boolean faceImport(Bitmap bitmap, String userName, String picName, String userInfo, byte[] bytes) {
+        BDFaceImageInstance imageInstance = new BDFaceImageInstance(bitmap);
+        LivenessModel livenessModel = new LivenessModel();
+        //TODO: bug in baidu native!!!!!!!!!   需要重启工程才能检测当前注册的用户
+        FaceInfo[] faceInfos = FaceSDKManager.getInstance().getFaceDetect()
+                .track(BDFaceSDKCommon.DetectType.DETECT_VIS, imageInstance);
+        Log.i(TAG, "139 faceInfos: " + faceInfos.length);
+
+        FaceSDKManager.getInstance().onFeatureCheck(imageInstance, faceInfos[0].landmarks,
+                livenessModel, 3);
+
+        if (livenessModel.getUser() != null) {
+            Log.i(TAG, "人脸库已存在该用户");
+        } else {
+            Log.i(TAG, "人脸库无此用户");
+            // 将用户信息和用户组信息保存到数据库
+            boolean importDBSuccess = FaceApi.getInstance().registerUserIntoDBmanager(GROUP_DEFAULT,
+                    userName, picName, null, bytes);
+
+            // 保存数据库成功
+            if (importDBSuccess) {
+                // 保存图片到注册用户图片路径
+                File facePicDir = FileUtils.getBatchImportSuccessDirectory();
+
+                if (facePicDir != null) {
+                    File savePicPath = new File(facePicDir, picName);
+
+                    if (FileUtils.saveBitmap(savePicPath, bitmap)) {
+                        LogUtils.i(TAG, "图片保存成功");
+                        if (mImportListener != null) {
+                            mImportListener.showToastMessage("保存成功！" + userName);
+                        }
+
+                    } else {
+                        LogUtils.e(TAG, "：图片保存失败");
+                    }
+                }
+                return true;
+            } else {
+                LogUtils.e(TAG, "：保存到数据库失败");
+            }
+        }
+        return false;
+    }
+
 
     private void updateProgress(int finishCount, int successCount, int failureCount, float progress) {
         if (mImportListener != null) {

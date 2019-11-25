@@ -39,6 +39,7 @@ import com.dataexpo.facedataexpo.view.RegistSelectDialog;
 
 import java.util.List;
 
+import static com.dataexpo.facedataexpo.manager.ImportFileManager.GROUP_DEFAULT;
 import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_DEPOSITORY;
 import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_GALLERY;
 import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_PHOTO;
@@ -55,17 +56,15 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private TextView btn_cancel;
     private TextView btn_delete;
     private RegistSelectDialog mDialog;
-
-    private String mGroupId = "default";
     private ButtonState mButtonState = ButtonState.BATCH_OPERATION;             // 当前按钮状态
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_depository);
-        initView();
-
         mContext = this;
+
+        initView();
     }
 
     @Override
@@ -90,7 +89,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
 
             case R.id.btn_face_depository_delete:
                 UserInfoManager.getInstance().deleteUserListInfo(mListUserInfo, mUserListListener, 0);
-                //UserInfoManager.getInstance().deleteUserInfo(mUserId, mGroupId, mListener);
+                //UserInfoManager.getInstance().deleteUserInfo(mUserId, GROUP_DEFAULT, mListener);
                 break;
 
             case R.id.btn_face_depository_back:
@@ -141,7 +140,6 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
 
     @Override
     public void onDialogItemClick(View view) {
-
     }
 
     @Override
@@ -164,16 +162,9 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     }
 
     private void initData() {
-//        Intent intent = getIntent();
-//        if (intent != null) {
-//            mGroupId = intent.getStringExtra("group_id");
-//            //mTextGroupName.setText("组：" + mGroupId);
-//        }
-        mGroupId = "default";
-
         mUserListListener = new UserListListener();
         // 读取数据库，获取用户信息
-        UserInfoManager.getInstance().getUserListInfoByGroupId(null, mGroupId,
+        UserInfoManager.getInstance().getUserListInfoByGroupId(null, GROUP_DEFAULT,
                 mUserListListener);
     }
 
@@ -272,7 +263,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    UserInfoManager.getInstance().getUserListInfoByGroupId(null, mGroupId, mUserListListener);
+                    UserInfoManager.getInstance().getUserListInfoByGroupId(null, GROUP_DEFAULT, mUserListListener);
                 }
             });
         }

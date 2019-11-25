@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  *  常用功能封装
@@ -48,6 +49,18 @@ public class Utils {
      * 获取当前时间的字符串
      */
     public static String timeNow() {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        return dateFormat.format(date);
+    }
+
+    /**
+     * 获取当前时间的字符串
+     *
+     * 获取5位随机数+系统时间  例如9999920191123111111
+     */
+    @Deprecated
+    public static String getRandomName() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         return dateFormat.format(date);

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,18 +35,21 @@ import com.dataexpo.facedataexpo.manager.ImportFileManager;
 import com.dataexpo.facedataexpo.model.ImageSrc;
 import com.dataexpo.facedataexpo.model.LivenessModel;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
+import com.dataexpo.facedataexpo.view.ImportDialog;
+import com.dataexpo.facedataexpo.view.LoginDialog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GallerySelectRegistActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener {
+public class GallerySelectRegistActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, ImportDialog.OnDialogClickListener {
     private static final String TAG = GallerySelectRegistActivity.class.getSimpleName();
     private RecyclerView recycler;
     private Context mContext;
     private ImageAdapter mImageAdapter;
-    private boolean isShowCheck = false;
+    private boolean isShowCheck = true;
     private List<ImageSrc> mShowList;
+    private ImportDialog mDialog;
     //网格列数
     private final static int TABLE_ROWS = 3;
 
@@ -66,6 +70,7 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
         recycler.setLayoutManager(layoutManager);
 
         mImageAdapter = new ImageAdapter();
+        mImageAdapter.setShowCheckBox(isShowCheck);
         mImageAdapter.setHasStableIds(true);
         recycler.setAdapter(mImageAdapter);
         mImageAdapter.setItemClickListener(this);
@@ -74,22 +79,26 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
         ImportFileManager.getInstance().setOnImportListener(new OnImportListener() {
             @Override
             public void startUnzip() {
-
             }
 
             @Override
             public void showProgressView() {
-
             }
 
             @Override
-            public void onImporting(int finishCount, int successCount, int failureCount, float progress) {
-
+            public void onImporting(final int finishCount, final int successCount, final int failureCount, float progress) {
+                Log.i(TAG, "onImporting!!!!");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDialog.tv_status.setText(String.format(getResources().getString(R.string.import_status), finishCount, successCount, failureCount));
+                        mDialog.tv_status.invalidate();
+                    }
+                });
             }
 
             @Override
             public void endImport(int finishCount, int successCount, int failureCount) {
-
             }
 
             @Override
@@ -97,6 +106,11 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
                 ToastUtils.toast(mContext, message);
             }
         });
+
+        mDialog = new ImportDialog(mContext);
+        mDialog.setDialogClickListener(this);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.setCancelable(false);
     }
 
     @Override
@@ -138,6 +152,7 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
                 break;
             case R.id.btn_add_gallery_select_regist:
                 //将选择的图片导入到人脸库
+                mDialog.show();
                 faceDetect();
                 break;
             default:
@@ -153,14 +168,25 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
             }
         }
         ImportFileManager.getInstance().asyncImportByGallery(uris);
+
     }
 
     @Override
     public void onLongItemClick(View view, int position) {
-        isShowCheck = !isShowCheck;
-        mImageAdapter.setShowCheckBox(isShowCheck);
-        LogUtils.i(TAG, "isShowCheck:: " + isShowCheck);
-        mImageAdapter.notifyDataSetChanged();
+//        isShowCheck = !isShowCheck;
+//        mImageAdapter.setShowCheckBox(isShowCheck);
+//        LogUtils.i(TAG, "isShowCheck:: " + isShowCheck);
+//        mImageAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onConfirmClick(View view) {
+        mDialog.dismiss();
+    }
+
+    @Override
+    public void onModifierClick(View view) {
+        mDialog.dismiss();
     }
 
     private static class ImageHolder extends RecyclerView.ViewHolder {
@@ -222,7 +248,6 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
             }
             // 添加数据
             //holder.img.setText(images.get(position));
-            LogUtils.i(TAG, "inbinHolder " + images.get(position).getImageSrcId());
             //holder.img.setImageResource(images.get(position).getImageSrcId());
             holder.img.setImageURI(Uri.fromFile(new File(images.get(position).getUri())));
             //ImageView.setImageURI(Uri.fromFile(new File("/sdcard/test.jpg")));
