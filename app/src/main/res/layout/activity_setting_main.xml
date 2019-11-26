@@ -76,6 +76,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_setting_main_face_detect_angle"/>
 
             <TextView
+                android:id="@+id/tv_setting_main_mirror_setting"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x100"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="@dimen/x46"
+                android:textColor="@color/black"
+                android:text="@string/mirror_setting"
+                android:layout_marginStart="@dimen/x30"
+                android:layout_marginTop="@dimen/x30"
+                app:layout_constraintTop_toBottomOf="@+id/tv_setting_main_camera_display_angle"/>
+
+            <TextView
                 android:id="@+id/tv_setting_main_faceliveness"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x100"
@@ -86,7 +99,7 @@
                 android:text="@string/face_liviness_set"
                 android:layout_marginStart="@dimen/x30"
                 android:layout_marginTop="@dimen/x30"
-                app:layout_constraintTop_toBottomOf="@+id/tv_setting_main_camera_display_angle"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_setting_main_mirror_setting"/>
 
 
             <TextView

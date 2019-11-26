@@ -60,4 +60,11 @@
     <string name="detect_angle">选择检测角度:</string>
     <string name="user_info">用户信息</string>
     <string name="import_status">等待导入:%1$d, 成功:%2$d, 失败:%3$d</string>
+    <string name="mirror_setting">检测框镜像调节</string>
+    <string name="mirror_tips">根据镜头或者使用设备差异，可能存在检测框与实际人脸方向镜像的问题，可通过以下设置进行调节。常见于镜头前置后置切换。</string>
+    <string name="rbg_mirror">RGB检测:</string>
+    <string name="nir_mirror">NIR检测:</string>
+    <string name="no_mirror">当前方向</string>
+    <string name="mirror">镜像方向</string>
+    <string name="save">保存</string>
 </resources>

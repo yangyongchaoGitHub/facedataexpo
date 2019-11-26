@@ -27,12 +27,17 @@ public class SettingMainActivity extends BaseActivity implements View.OnClickLis
         findViewById(R.id.tv_setting_main_recognize_model_threshold).setOnClickListener(this);
         findViewById(R.id.tv_setting_main_recognize_model).setOnClickListener(this);
         findViewById(R.id.tv_setting_main_face_detect_angle).setOnClickListener(this);
+        findViewById(R.id.tv_setting_main_mirror_setting).setOnClickListener(this);
         findViewById(R.id.btn_setting_main_back).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_setting_main_mirror_setting:
+                startActivity(new Intent(mContext, MirrorSettingActivity.class));
+                break;
+
             case R.id.tv_setting_main_face_detect_angle:
                 //人像识别角度设置
                 startActivity(new Intent(mContext, FaceDetectAngleActivity.class));
