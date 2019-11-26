@@ -48,6 +48,7 @@
         <activity android:name=".activity.set.FaceLivinessType"/>
         <activity android:name=".activity.set.RecognizeModleThresholdActivity"/>
         <activity android:name=".activity.set.FaceLivenessThresholdActivity"/>
+        <activity android:name=".activity.set.FaceDetectAngleActivity"/>
 
     </application>
 </manifest>
