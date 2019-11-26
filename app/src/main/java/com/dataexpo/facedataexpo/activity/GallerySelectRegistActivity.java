@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -42,7 +43,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GallerySelectRegistActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, ImportDialog.OnDialogClickListener {
+public class GallerySelectRegistActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, ImportDialog.OnDialogClickListener, OnImportListener {
     private static final String TAG = GallerySelectRegistActivity.class.getSimpleName();
     private RecyclerView recycler;
     private Context mContext;
@@ -75,37 +76,7 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
         recycler.setAdapter(mImageAdapter);
         mImageAdapter.setItemClickListener(this);
         mImageAdapter.setOnItemLongClickListener(this);
-
-        ImportFileManager.getInstance().setOnImportListener(new OnImportListener() {
-            @Override
-            public void startUnzip() {
-            }
-
-            @Override
-            public void showProgressView() {
-            }
-
-            @Override
-            public void onImporting(final int finishCount, final int successCount, final int failureCount, float progress) {
-                Log.i(TAG, "onImporting!!!!");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDialog.tv_status.setText(String.format(getResources().getString(R.string.import_status), finishCount, successCount, failureCount));
-                        mDialog.tv_status.invalidate();
-                    }
-                });
-            }
-
-            @Override
-            public void endImport(int finishCount, int successCount, int failureCount) {
-            }
-
-            @Override
-            public void showToastMessage(String message) {
-                ToastUtils.toast(mContext, message);
-            }
-        });
+        ImportFileManager.getInstance().setOnImportListener(this);
 
         mDialog = new ImportDialog(mContext);
         mDialog.setDialogClickListener(this);
@@ -150,6 +121,7 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
             case R.id.btn_back_gallery_select_regist:
                 finish();
                 break;
+
             case R.id.btn_add_gallery_select_regist:
                 //将选择的图片导入到人脸库
                 mDialog.show();
@@ -159,7 +131,6 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
         }
     }
 
-
     private void faceDetect() {
         List<String> uris = new ArrayList<>();
         for (int i = 0; i < mShowList.size(); i++) {
@@ -167,8 +138,12 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
                 uris.add(mShowList.get(i).getUri());
             }
         }
-        ImportFileManager.getInstance().asyncImportByGallery(uris);
 
+        Toast.makeText(mContext, "请选择导入的相片", Toast.LENGTH_SHORT).show();
+
+        if (uris.size() > 0) {
+            ImportFileManager.getInstance().asyncImportByGallery(uris);
+        }
     }
 
     @Override
@@ -187,6 +162,43 @@ public class GallerySelectRegistActivity extends BaseActivity implements OnItemC
     @Override
     public void onModifierClick(View view) {
         mDialog.dismiss();
+    }
+
+    @Override
+    public void startUnzip() {
+
+    }
+
+    @Override
+    public void showProgressView() {
+
+    }
+
+    @Override
+    public void onImporting(int finishCount, int successCount, int failureCount, float progress) {
+
+    }
+
+    @Override
+    public void onImporting(final int finishCount, final int successCount, final int failureCount, final int total) {
+        Log.i(TAG, "onImporting!!!!");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDialog.tv_status.setText(String.format(getResources().getString(R.string.import_status), total - successCount - failureCount, successCount, failureCount));
+                mDialog.tv_status.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void endImport(int finishCount, int successCount, int failureCount) {
+
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+
     }
 
     private static class ImageHolder extends RecyclerView.ViewHolder {

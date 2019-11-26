@@ -28,11 +28,13 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
     private void initData() {
         User u = (User) getIntent().getSerializableExtra(Utils.EXTRA_EXPO_USRE);
-        tv_name.setText(u.getUserName());
-        tv_ctime.setText(Utils.formatTime(u.getCtime(), "yyyy.MM.dd HH:mm:ss"));
-        Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getBatchImportSuccessDirectory()
-                + "/" + u.getImageName());
-        iv_user_image.setImageBitmap(bitmap);
+        if (u != null) {
+            tv_name.setText(u.getUserName());
+            tv_ctime.setText(Utils.formatTime(u.getCtime(), "yyyy.MM.dd HH:mm:ss"));
+            Bitmap bitmap = BitmapFactory.decodeFile(FileUtils.getBatchImportSuccessDirectory()
+                    + "/" + u.getImageName());
+            iv_user_image.setImageBitmap(bitmap);
+        }
     }
 
     private void initView() {

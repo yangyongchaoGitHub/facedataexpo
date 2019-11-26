@@ -27,6 +27,7 @@ import com.dataexpo.facedataexpo.Utils.Utils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
 import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.listener.OnDialogClickListener;
+import com.dataexpo.facedataexpo.listener.OnImportListener;
 import com.dataexpo.facedataexpo.listener.OnItemClickListener;
 import com.dataexpo.facedataexpo.listener.OnItemLongClickListener;
 import com.dataexpo.facedataexpo.manager.ImportFileManager;
@@ -34,6 +35,7 @@ import com.dataexpo.facedataexpo.manager.UserInfoManager;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.Utils.Utils;
+import com.dataexpo.facedataexpo.view.ImportDialog;
 import com.dataexpo.facedataexpo.view.LoginDialog;
 import com.dataexpo.facedataexpo.view.RegistSelectDialog;
 
@@ -44,7 +46,7 @@ import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_DEPOSI
 import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_GALLERY;
 import static com.dataexpo.facedataexpo.view.RegistSelectDialog.REGIST_BY_PHOTO;
 
-public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, OnDialogClickListener {
+public class FaceDepositoryActivity extends BaseActivity implements OnItemClickListener, View.OnClickListener, OnItemLongClickListener, OnDialogClickListener, ImportDialog.OnDialogClickListener, OnImportListener {
     private static final String TAG = FaceDepositoryActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private Context mContext;
@@ -56,6 +58,7 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
     private TextView btn_cancel;
     private TextView btn_delete;
     private RegistSelectDialog mDialog;
+    private ImportDialog mDialog_import;
     private ButtonState mButtonState = ButtonState.BATCH_OPERATION;             // 当前按钮状态
 
     @Override
@@ -150,10 +153,64 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         } else if (REGIST_BY_GALLERY == i) {
             startActivity(new Intent(this, GallerySelectRegistActivity.class));
         } else if (REGIST_BY_DEPOSITORY == i) {
-            ToastUtils.toast(this, "搜索中，请稍后----  ------  ---");
+            mDialog_import.show();
+            mDialog_import.tv_status.setText("搜索中，请稍后----  ------  ---");
+            ImportFileManager.getInstance().setOnImportListener(this);
             ImportFileManager.getInstance().batchImport();
         }
         mDialog.dismiss();
+    }
+
+    @Override
+    public void onConfirmClick(View view) {
+        mDialog_import.dismiss();
+    }
+
+    @Override
+    public void onModifierClick(View view) {
+        mDialog_import.dismiss();
+    }
+
+    @Override
+    public void startUnzip() {
+
+    }
+
+    @Override
+    public void showProgressView() {
+
+    }
+
+    @Override
+    public void onImporting(int finishCount, int successCount, int failureCount, float progress) {
+
+    }
+
+    @Override
+    public void onImporting(final int finishCount, final int successCount, final int failureCount, final int total) {
+        Log.i(TAG, "onImporting!!!!");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDialog_import.tv_status.setText(String.format(
+                                getResources().getString(R.string.import_status),
+                                total - successCount - failureCount,
+                                successCount,
+                                failureCount));
+                mDialog_import.tv_status.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void endImport(int finishCount, int successCount, int failureCount) {
+
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        mDialog_import.tv_status.setText(message);
+        mDialog_import.tv_status.invalidate();
     }
 
     private enum ButtonState {
@@ -189,6 +246,11 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
         mDialog.setDialogClickListener(this);
         mDialog.setCanceledOnTouchOutside(true);
         //mDialog.setCancelable(false);
+
+        mDialog_import = new ImportDialog(mContext);
+        mDialog_import.setDialogClickListener(this);
+        mDialog_import.setCanceledOnTouchOutside(false);
+        mDialog_import.setCancelable(false);
     }
 
     private void updateDeleteUI(boolean needDelete) {
@@ -222,7 +284,8 @@ public class FaceDepositoryActivity extends BaseActivity implements OnItemClickL
                 @Override
                 public void run() {
                     if (listUserInfo == null || listUserInfo.size() == 0) {
-                        ToastUtils.toast(mContext, "暂未搜索到此用户");
+                        ToastUtils.toast(mContext, "暂未搜索到用户");
+                        return;
                     } else {
                         mListUserInfo = listUserInfo;
                     }

@@ -182,36 +182,36 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     }
 
     private void initLicense() {
-        LogUtils.i(TAG, "initLicense!!!!");
+        Log.i(TAG, "initLicense!!!!");
 
         if (FaceSDKManager.initStatus != FaceSDKManager.SDK_MODEL_LOAD_SUCCESS) {
             FaceSDKManager.getInstance().init(mContext, new SdkInitListener() {
                 @Override
                 public void initStart() {
-                    LogUtils.i(TAG, "init sdk start");
+                    Log.i(TAG, "init sdk start");
                 }
 
                 @Override
                 public void initLicenseSuccess() {
-                    LogUtils.i(TAG, "initLicenseSuccess");
+                    Log.i(TAG, "initLicenseSuccess");
                 }
 
                 @Override
                 public void initLicenseFail(int errorCode, String msg) {
                     // 如果授权失败，跳转授权页面
-                    ToastUtils.toast(mContext, errorCode + msg);
+                    ToastUtils.toast(mContext, errorCode + " " + msg);
                     // startActivity(new Intent(mContext, FaceAuthActicity.class));
-                    LogUtils.i(TAG, "initLicenseFail");
+                    Log.i(TAG, "initLicenseFail");
                 }
 
                 @Override
                 public void initModelSuccess() {
-                    LogUtils.i(TAG, "initModelSuccess");
+                    Log.i(TAG, "initModelSuccess");
                 }
 
                 @Override
                 public void initModelFail(int errorCode, String msg) {
-                    LogUtils.i(TAG, "initModelFail");
+                    Log.i(TAG, "initModelFail");
                 }
             });
         }

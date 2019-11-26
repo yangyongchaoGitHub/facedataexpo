@@ -19,6 +19,13 @@
         android:textColor="#ffffff"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tv_photo_regist_back"
+        android:layout_width="@dimen/x80"
+        android:layout_height="@dimen/x80"
+        android:gravity="center"
+        android:text="@string/back"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"

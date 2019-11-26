@@ -56,5 +56,5 @@
     <string name="description">说明</string>
     <string name="rotation_angle">选择旋转角度（顺时针方向）</string>
     <string name="user_info">用户信息</string>
-    <string name="import_status">当前导入总数:%1$d,成功:%2$d,失败:%3$d</string>
+    <string name="import_status">等待导入:%1$d, 成功:%2$d, 失败:%3$d</string>
 </resources>

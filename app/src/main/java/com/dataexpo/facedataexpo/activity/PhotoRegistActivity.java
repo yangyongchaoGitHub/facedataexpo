@@ -93,6 +93,10 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_photo_regist_back:
+                finish();
+                break;
+
             case R.id.btn_cat_photo:
                 LogUtils.i(TAG, "cat_photo!!");
                 in_get_image = IN_PHOTO;
@@ -154,6 +158,7 @@ public class PhotoRegistActivity extends BaseActivity implements View.OnClickLis
 
         findViewById(R.id.btn_regist_cancel).setOnClickListener(this);
         findViewById(R.id.btn_regist_ok).setOnClickListener(this);
+        findViewById(R.id.tv_photo_regist_back).setOnClickListener(this);
         rl_photo_sensor = findViewById(R.id.rl_photo_censor);
 
         mDialog = new RegistUserDialog(this);

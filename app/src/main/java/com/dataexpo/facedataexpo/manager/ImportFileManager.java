@@ -112,6 +112,7 @@ public class ImportFileManager {
                 boolean importDBSuccess;
                 String picName;
                 boolean mSuccess = false;
+                final int total = images.size();
 
                 for (int i = 0; i < images.size(); i++) {
                     mFinishCount++;
@@ -152,7 +153,7 @@ public class ImportFileManager {
                         Log.i(TAG, "FinishCount: " + mFinishCount + " successCount: " + mSuccessCount + " failcount: " + mFailCount);
 
                         if (mImportListener != null) {
-                            mImportListener.onImporting(mFinishCount, mSuccessCount, mFailCount, 0);
+                            mImportListener.onImporting(mFinishCount, mSuccessCount, mFailCount, total);
                         }
 
                         // 图片回收

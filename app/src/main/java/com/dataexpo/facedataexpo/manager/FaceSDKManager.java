@@ -40,6 +40,9 @@ import static com.dataexpo.facedataexpo.model.GlobalSet.TIME_TAG;
 
 public class FaceSDKManager {
     private static final String TAG = FaceSDKManager.class.getSimpleName();
+    private static final int AUTH_AUTO = 0;
+    private static final int AUTH_INLINE = 1;
+    private static final int AUTH_OFFLINE = 2;
 
     public static final int SDK_MODEL_LOAD_SUCCESS = 0;
     public static final int SDK_UNACTIVATION = 1;
@@ -91,26 +94,34 @@ public class FaceSDKManager {
         return faceLiveness;
     }
 
+    public void init(final Context context, final SdkInitListener listener) {
+        init(context, listener, AUTH_AUTO);
+    }
     /**
-     * 初始化鉴权，如果鉴权通过，直接初始化模型
-     *
+     * 新鉴权接口，可以使用离线或者在线模式进行鉴权
      * @param context
      * @param listener
+     * @param type 选择在线或者离线模式
      */
-    public void init(final Context context, final SdkInitListener listener) {
-
+    public void init(final Context context, final SdkInitListener listener, int type) {
         PreferencesUtil.initPrefs(context.getApplicationContext());
         String licenseOfflineKey = PreferencesUtil.getString("activate_offline_key", "");
         //在MI8上
         //final String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "HPYX-AEQ9-PGNU-GQTA");
+        // 在firework上
+        //String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "ZRHX-HNLO-DWNC-LONJ");
+        //在firewpork新设置的key
+        String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "TRXE-J7XX-LUXZ-PZ3U");
         //在开发板上
         //String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "");
         //开发板原有的key    3PSM-KOHY-AQLG-BBWI
-        String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "3PSM-KOHY-AQLG-BBWI");
+        //String licenseOnlineKey = PreferencesUtil.getString("activate_online_key", "3PSM-KOHY-AQLG-BBWI");
 
 //        if (!TextUtils.isEmpty(licenseOfflineKey) && TextUtils.isEmpty(licenseOnlineKey)) {
 //            licenseOnlineKey = licenseOfflineKey;
 //        }
+        //licenseOnlineKey = "TRXE-J7XX-LUXZ-PZ3U";
+        //licenseOfflineKey = "TRXE-J7XX-LUXZ-PZ3U";
 
         LogUtils.i("FaceSDKManager", "offLineKey:" + licenseOfflineKey + " onLineKey: " + licenseOnlineKey);
 
@@ -122,55 +133,74 @@ public class FaceSDKManager {
             }
             return;
         }
-        // todo 增加判空处理
+
         if (listener != null) {
             listener.initStart();
         }
-        if (!TextUtils.isEmpty(licenseOfflineKey)) {
-            LogUtils.i("FaceSDKManager", "进行离线激活");
-            // 离线激活
-            faceAuth.initLicenseOffLine(context, new Callback() {
-                @Override
-                public void onResponse(int code, String response) {
-                    LogUtils.i("FaceSDKManager", "进行离线激活 code:" + code + " " + response);
-                    if (code == 0) {
-                        initStatus = SDK_INIT_SUCCESS;
-                        if (listener != null) {
-                            listener.initLicenseSuccess();
-                        }
-                        initModel(context, listener);
-                    } else {
-                        if (listener != null) {
-                            listener.initLicenseFail(code, response);
-                        }
-                    }
-                }
-            });
-        } else if (!TextUtils.isEmpty(licenseOnlineKey)) {
-            LogUtils.i("FaceSDKManager", "进行在线激活");
-            // 在线激活
-            faceAuth.initLicenseOnLine(context, licenseOnlineKey, new Callback() {
-                @Override
-                public void onResponse(int code, String response) {
-                    if (code == 0) {
-                        initStatus = SDK_INIT_SUCCESS;
-                        if (listener != null) {
-                            listener.initLicenseSuccess();
-                        }
-                        initModel(context, listener);
-                    } else {
-                        if (listener != null) {
-                            listener.initLicenseFail(code, response);
-                        }
-                    }
-                }
-            });
+
+        if (!TextUtils.isEmpty(licenseOfflineKey) && (type == AUTH_OFFLINE || type == AUTH_AUTO)) {
+            initOffLine(context, listener, licenseOfflineKey);
+
+        } else if (!TextUtils.isEmpty(licenseOnlineKey) && (type == AUTH_INLINE || type == AUTH_AUTO)) {
+            initOnLine(context, listener, licenseOnlineKey);
 
         } else {
             if (listener != null) {
                 listener.initLicenseFail(-1, "授权码不存在，请重新输入！");
             }
         }
+    }
+
+    public void initOnLine(final Context context, final SdkInitListener listener, String key) {
+        ToastUtils.toast(context, "进行在线激活!!! " + key);
+        LogUtils.i("FaceSDKManager", "进行在线激活 " + key);
+        // 在线激活
+        faceAuth.initLicenseOnLine(context, key, new Callback() {
+            @Override
+            public void onResponse(int code, String response) {
+                if (code == 0) {
+                    initStatus = SDK_INIT_SUCCESS;
+                    if (listener != null) {
+                        listener.initLicenseSuccess();
+                    }
+                    initModel(context, listener);
+                } else {
+                    if (listener != null) {
+                        listener.initLicenseFail(code, response);
+                    }
+                }
+            }
+        });
+    }
+
+    public void initOffLine(final Context context, final SdkInitListener listener, String key) {
+        initOffLine(context, listener, key, false);
+    }
+
+    public void initOffLine(final Context context, final SdkInitListener listener, String key, final boolean tryOnline) {
+        ToastUtils.toast(context, "进行离线激活!!! " + key);
+        LogUtils.i("FaceSDKManager", "进行离线激活");
+        // 离线激活
+        faceAuth.initLicenseOffLine(context, new Callback() {
+            @Override
+            public void onResponse(int code, String response) {
+                LogUtils.i("FaceSDKManager", "进行离线激活 code:" + code + " " + response);
+                if (code == 0) {
+                    initStatus = SDK_INIT_SUCCESS;
+                    if (listener != null) {
+                        listener.initLicenseSuccess();
+                    }
+                    initModel(context, listener);
+                } else {
+                    if (listener != null) {
+                        listener.initLicenseFail(code, response);
+                    }
+                    if (tryOnline) {
+                        init(context, listener, AUTH_INLINE);
+                    }
+                }
+            }
+        });
     }
 
     /**
