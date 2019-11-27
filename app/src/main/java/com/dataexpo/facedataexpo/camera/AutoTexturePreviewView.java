@@ -71,10 +71,7 @@ public class AutoTexturePreviewView extends FrameLayout {
             int scaledChildWidth = videoWidth * previewHeight / videoHeight;
             textureView.layout((previewWidth - scaledChildWidth) / scale, 0,
                     (previewWidth + scaledChildWidth) / scale, previewHeight);
-
         }
-
-
     }
 
     public TextureView getTextureView() {
@@ -101,6 +98,5 @@ public class AutoTexturePreviewView extends FrameLayout {
                 requestLayout();
             }
         });
-
     }
 }

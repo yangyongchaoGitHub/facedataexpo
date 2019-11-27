@@ -1,7 +1,10 @@
 package com.dataexpo.facedataexpo.activity;
 
+import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,6 +14,7 @@ import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.TextureView;
@@ -47,6 +51,7 @@ import com.dataexpo.facedataexpo.manager.ImportFileManager;
 import com.dataexpo.facedataexpo.model.LivenessModel;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 import com.dataexpo.facedataexpo.model.User;
+import com.dataexpo.facedataexpo.service.BgService;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.view.LoginDialog;
 import com.dataexpo.facedataexpo.view.PreviewTexture;
@@ -94,6 +99,8 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     private EditText et_login;
     private boolean isConfigExit;
     private boolean isInitConfig;
+    private BgService.MsgBinder msgBinder;
+    private ServiceConnection mConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +142,20 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         mDialog.setDialogClickListener(this);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.setCancelable(false);
+
+        mConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                msgBinder = (BgService.MsgBinder) service;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        startService(new Intent(getApplicationContext(), BgService.class));
+        bindService(new Intent(getApplicationContext(), BgService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void initView() {
@@ -549,7 +570,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         LogUtils.i(TAG, mDialog.et_pswd.getText().toString());
         startActivity(new Intent(this, BasicSetActivity.class));
         mDialog.dismiss();
-        finish();
+        //finish();
     }
 
     @Override

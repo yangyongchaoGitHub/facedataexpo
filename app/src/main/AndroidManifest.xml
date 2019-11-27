@@ -50,5 +50,14 @@
         <activity android:name=".activity.set.FaceLivenessThresholdActivity"/>
         <activity android:name=".activity.set.FaceDetectAngleActivity"/>
         <activity android:name=".activity.set.MirrorSettingActivity"/>
+
+        <service android:name=".service.BgService"/>
+        <receiver android:name=".Receiver.BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
