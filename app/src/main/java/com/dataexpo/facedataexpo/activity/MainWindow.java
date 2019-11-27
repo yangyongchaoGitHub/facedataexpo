@@ -277,6 +277,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
     @Override
     protected void onPause() {
+        Log.i(TAG, "onPause");
         super.onPause();
         if (mCamera_ir != null) {
             mCamera_ir.setPreviewCallback(null);
@@ -552,6 +553,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
     @Override
     protected void onDestroy() {
+        Log.i(TAG, "onDestroy!!!!");
         super.onDestroy();
         CameraPreviewManager.getInstance().stopPreview();
         ImportFileManager.getInstance().release();
@@ -563,6 +565,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         LogUtils.i(TAG, mDialog.et_pswd.getText().toString());
         startActivity(new Intent(this, BasicSetActivity.class));
         mDialog.dismiss();
+        CameraPreviewManager.getInstance().stopPreview();
         //finish();
     }
 

@@ -148,7 +148,9 @@ public class BaseCameraManager {
                 mCamera.setPreviewCallback(new Camera.PreviewCallback() {
                     @Override
                     public void onPreviewFrame(byte[] bytes, Camera camera) {
+                        Log.i("BaseCameraManager ", "onPreviewFrame");
                         if (mCameraDataCallback != null) {
+                            Log.i("BaseCameraManager ", " != null ");
                             mCameraDataCallback.onGetCameraData(bytes, camera,
                                     videoWidth, videoHeight);
                         }

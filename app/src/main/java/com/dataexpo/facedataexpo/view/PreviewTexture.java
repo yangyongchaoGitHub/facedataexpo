@@ -79,6 +79,7 @@ public class PreviewTexture extends ViewGroup implements TextureView.SurfaceText
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture texture, int i, int i1) {
+        Log.i("PreviewTexture", "onSurfaceTextureAvailable");
         try {
             if (mCamera != null && !mPreviewed) {
                 mSurfaceTexture = texture;
@@ -88,7 +89,7 @@ public class PreviewTexture extends ViewGroup implements TextureView.SurfaceText
                 mSurfaceCreated = true;
             }
         } catch (IOException exception) {
-            Log.e("chaixiaogang", "IOException caused by setPreviewDisplay()", exception);
+            Log.e("PreviewTexture", "IOException caused by setPreviewDisplay()", exception);
         }
     }
 
@@ -98,13 +99,9 @@ public class PreviewTexture extends ViewGroup implements TextureView.SurfaceText
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
+        Log.i("PreviewTexture", "onSurfaceTextureDestroyed-------");
         if (mCamera != null) {
-            // mCamera.stopPreview();
             mPreviewed = false;
-//            mCamera.setPreviewCallback(null);
-//            mCamera.stopPreview();
-//            mCamera.release();
-//            mCamera = null;
         }
         mSurfaceCreated = false;
         return true;

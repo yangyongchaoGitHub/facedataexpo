@@ -84,18 +84,22 @@ public class CameraPreviewManager extends BaseCameraManager implements TextureVi
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
         Log.e(TAG, "--surfaceTexture--destroyed");
-        mSurfaceCreated = false;
-        if (mCamera != null) {
-            mCamera.setPreviewCallback(null);
-            mCamera.stopPreview();
-            mCamera.release();
-            mCamera = null;
-        }
+//        mSurfaceCreated = false;
+//        if (mCamera != null) {
+//            mCamera.setPreviewCallback(null);
+//            mCamera.stopPreview();
+//            mCamera.release();
+//            mCamera = null;
+//        }
         return true;
     }
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture texture) {
         // Log.e(TAG, "--surfaceTexture--Updated");
+    }
+
+    public void setCameraInBack() {
+
     }
 }
