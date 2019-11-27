@@ -56,6 +56,13 @@ public class Utils {
 
     /**
      * 获取当前时间的字符串
+     */
+    public static long timeNow_() {
+        return new Date().getTime();
+    }
+
+    /**
+     * 获取当前时间的字符串
      *
      * 获取5位随机数+系统时间  例如9999920191123111111
      */

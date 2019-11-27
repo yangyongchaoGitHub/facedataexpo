@@ -1,6 +1,5 @@
 package com.dataexpo.facedataexpo.activity;
 
-import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceInfo;
-import com.baidu.idl.main.facesdk.model.BDFaceImageInstance;
 import com.dataexpo.facedataexpo.R;
-import com.dataexpo.facedataexpo.Utils.BitmapUtils;
 import com.dataexpo.facedataexpo.Utils.ConfigUtils;
 import com.dataexpo.facedataexpo.Utils.DensityUtils;
 import com.dataexpo.facedataexpo.Utils.FaceOnDrawTexturViewUtil;
@@ -37,14 +34,10 @@ import com.dataexpo.facedataexpo.Utils.FileUtils;
 import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.Utils.ToastUtils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
-import com.dataexpo.facedataexpo.api.FaceApi;
 import com.dataexpo.facedataexpo.callback.CameraDataCallback;
 import com.dataexpo.facedataexpo.callback.FaceDetectCallBack;
 import com.dataexpo.facedataexpo.camera.AutoTexturePreviewView;
-import com.dataexpo.facedataexpo.camera.BaseCameraManager;
 import com.dataexpo.facedataexpo.camera.CameraPreviewManager;
-import com.dataexpo.facedataexpo.camera.CameraPreviewManagerSingal;
-import com.dataexpo.facedataexpo.listener.OnImportListener;
 import com.dataexpo.facedataexpo.listener.SdkInitListener;
 import com.dataexpo.facedataexpo.manager.FaceSDKManager;
 import com.dataexpo.facedataexpo.manager.ImportFileManager;
@@ -52,13 +45,11 @@ import com.dataexpo.facedataexpo.model.LivenessModel;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
 import com.dataexpo.facedataexpo.model.User;
 import com.dataexpo.facedataexpo.service.BgService;
+import com.dataexpo.facedataexpo.service.MainApplication;
 import com.dataexpo.facedataexpo.view.CircleImageView;
 import com.dataexpo.facedataexpo.view.LoginDialog;
 import com.dataexpo.facedataexpo.view.PreviewTexture;
 
-import java.util.Date;
-
-import static com.dataexpo.facedataexpo.camera.BaseCameraManager.CAMERA_FACING_FRONT;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_NO_LIVE;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGBANDNIR_LIVE;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGB_LIVE;
@@ -99,7 +90,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     private EditText et_login;
     private boolean isConfigExit;
     private boolean isInitConfig;
-    private BgService.MsgBinder msgBinder;
     private ServiceConnection mConnection;
 
     @Override
@@ -138,7 +128,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
             relativeLayout.setLayoutParams(params);
         }
 
-        mDialog = new LoginDialog(this);
+        mDialog = new LoginDialog(mContext);
         mDialog.setDialogClickListener(this);
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.setCancelable(false);
@@ -146,7 +136,9 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         mConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                msgBinder = (BgService.MsgBinder) service;
+                BgService.MsgBinder msgBinder = (BgService.MsgBinder) service;
+                MainApplication.getInstance().setService(msgBinder.getService());
+                msgBinder.getService().setCallback(onLongTime);
             }
 
             @Override
@@ -154,7 +146,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
             }
         };
-        startService(new Intent(getApplicationContext(), BgService.class));
+        //startService(new Intent(getApplicationContext(), BgService.class));
         bindService(new Intent(getApplicationContext(), BgService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -563,6 +555,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         super.onDestroy();
         CameraPreviewManager.getInstance().stopPreview();
         ImportFileManager.getInstance().release();
+        //unbindService(mConnection);
     }
 
     @Override
