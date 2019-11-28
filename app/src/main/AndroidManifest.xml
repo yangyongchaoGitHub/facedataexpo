@@ -27,7 +27,7 @@
 
         <activity
             android:name=".activity.MainWindow"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme_NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,7 +51,7 @@
         <activity android:name=".activity.set.FaceLivenessThresholdActivity"/>
         <activity android:name=".activity.set.FaceDetectAngleActivity"/>
         <activity android:name=".activity.set.MirrorSettingActivity"/>
-        <activity android:name=".activity.set.ScreensaverActivity"/>
+        <activity android:name=".activity.set.ScreensaverActivity" android:launchMode="singleInstance"/>
 
         <service android:name=".service.BgService"/>
         <receiver android:name=".Receiver.BootReceiver" >

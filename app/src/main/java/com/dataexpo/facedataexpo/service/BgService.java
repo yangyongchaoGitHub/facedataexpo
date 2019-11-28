@@ -62,11 +62,14 @@ public class BgService extends Service {
 
                     //检测时间是否超时
                     if (timgout > 1000*10) {
+                        //在菜单界面回到视频界面时若没有显示屏保界面，可能不会进入屏保，所以强制发送timeout
+                        action = ACTION_TIMEOUT;
+
                         //在视频显示状态或者菜单设置的界面时
                         if (mScreenStatus == STATUS_VIDEO || mScreenStatus == STATUS_ACTIVITY) {
-                            action = ACTION_TIMEOUT;
                             mScreenStatus = STATUS_SCREENSAVE;
                         }
+
                     } else if (mScreenStatus == STATUS_SCREENSAVE) {
                         //如果未超时并且在屏保状态下，则发送恢复回调
                         action = ACTION_HAVE_FACE;

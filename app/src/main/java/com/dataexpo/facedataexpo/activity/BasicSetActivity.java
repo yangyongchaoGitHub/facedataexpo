@@ -50,7 +50,8 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            finish();
+                            //finish();
+                            startActivity(new Intent(mContext, MainWindow.class));
                             //startActivity(new Intent(mContext, ScreensaverActivity.class));
                         }
                     });
@@ -131,6 +132,7 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
             case R.id.tv_rgb_live_threshold_value:
                 startActivity(new Intent(mContext, FaceLivenessThresholdActivity.class));
                 break;
+
             case R.id.tv_silent_live_type_value:
             case R.id.tv_basicset_silent_live_type_dspc:
                 startActivity(new Intent(mContext, FaceLivinessType.class));
@@ -145,6 +147,7 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
                 startActivity(new Intent(this, MainWindow.class));
                 finish();
                 break;
+
             case R.id.btn_face_depository:
                 startActivity(new Intent(this, FaceDepositoryActivity.class));
                 break;
