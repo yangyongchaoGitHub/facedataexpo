@@ -5,19 +5,25 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.dataexpo.facedataexpo.Utils.Utils;
-import com.dataexpo.facedataexpo.listener.OnLongTime;
+import com.dataexpo.facedataexpo.listener.OnServeiceCallback;
 
 public class BgService extends Service {
     private static final String TAG = BgService.class.getSimpleName();
+    public static final int ACTION_TIMEOUT = 1;
+    public static final int ACTION_HAVE_FACE = 2;
+
+    public static final int STATUS_VIDEO = 1;
+    public static final int STATUS_ACTIVITY = 2;
+    public static final int STATUS_SCREENSAVE = 3;
+    private volatile int mScreenStatus = STATUS_VIDEO;
+
     private int touch = 0;
     private MsgBinder mb = null;
-    private OnLongTime onLongTime;
+    private OnServeiceCallback onServeiceCallback;
     private long startTime;
     private long endTime;
-    private boolean bInLongTimeNoTouch = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,6 +47,9 @@ public class BgService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                long timgout = 0;
+                int action = 0;
+
                 while (true) {
                     try {
                         Thread.sleep(1000);
@@ -49,26 +58,36 @@ public class BgService extends Service {
                     }
 
                     endTime = Utils.timeNow_();
+                    timgout = endTime - startTime;
 
-                    if (endTime - startTime > 1000*30 && !bInLongTimeNoTouch) {
-                        if (onLongTime != null) {
-                            onLongTime.OnLongTimeNoTouch();
-                            bInLongTimeNoTouch = true;
+                    //检测时间是否超时
+                    if (timgout > 1000*10) {
+                        //在视频显示状态或者菜单设置的界面时
+                        if (mScreenStatus == STATUS_VIDEO || mScreenStatus == STATUS_ACTIVITY) {
+                            action = ACTION_TIMEOUT;
+                            mScreenStatus = STATUS_SCREENSAVE;
                         }
+                    } else if (mScreenStatus == STATUS_SCREENSAVE) {
+                        //如果未超时并且在屏保状态下，则发送恢复回调
+                        action = ACTION_HAVE_FACE;
+                        mScreenStatus = STATUS_VIDEO;
                     }
 
-                    Log.i(TAG, "dingdong!! " + startTime + " " + endTime);
+                    //发送超时的回调
+                    if (onServeiceCallback != null && action != 0) {
+                        onServeiceCallback.onCallback(action);
+                    }
+
+                    Log.i(TAG, "dingdong!! " + startTime + " " + endTime + " " + mScreenStatus + " " + action);
+
+                    action = 0;
                 }
             }
         }).start();
     }
 
-    public boolean isbInLongTimeNoTouch() {
-        return bInLongTimeNoTouch;
-    }
-
-    public void setbInLongTimeNoTouch(boolean bInLongTimeNoTouch) {
-        this.bInLongTimeNoTouch = bInLongTimeNoTouch;
+    public final int getmScreenStatus() {
+        return mScreenStatus;
     }
 
     public void touch() {
@@ -76,8 +95,8 @@ public class BgService extends Service {
         endTime = Utils.timeNow_();
     }
 
-    public void setCallback(OnLongTime onLongTime) {
-        this.onLongTime = onLongTime;
+    public void setCallback(OnServeiceCallback onServeiceCallback) {
+        this.onServeiceCallback = onServeiceCallback;
     }
 
     public class MsgBinder extends Binder {

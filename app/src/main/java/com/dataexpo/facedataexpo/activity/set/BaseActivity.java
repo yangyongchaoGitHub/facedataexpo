@@ -13,15 +13,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.dataexpo.facedataexpo.listener.OnLongTime;
-import com.dataexpo.facedataexpo.service.BgService;
+import com.dataexpo.facedataexpo.listener.OnServeiceCallback;
 import com.dataexpo.facedataexpo.service.MainApplication;
 
 import java.util.ArrayList;
 
+import static com.dataexpo.facedataexpo.service.BgService.ACTION_HAVE_FACE;
+import static com.dataexpo.facedataexpo.service.BgService.ACTION_TIMEOUT;
+
 public class BaseActivity extends Activity {
-    private Context mContext;
-    public OnLongTime onLongTime;
+    public Context mContext;
+    public OnServeiceCallback onServeiceCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,18 +36,7 @@ public class BaseActivity extends Activity {
         requestPermissions(99);
 
         mContext = this;
-        onLongTime = new OnLongTime() {
-            @Override
-            public void OnLongTimeNoTouch() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        startActivity(new Intent(mContext, ScreensaverActivity.class));
-                        Toast.makeText(mContext, "this is on long ting", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        };
+
     }
 
     // 请求权限

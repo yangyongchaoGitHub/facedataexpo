@@ -34,10 +34,12 @@ import com.dataexpo.facedataexpo.Utils.FileUtils;
 import com.dataexpo.facedataexpo.Utils.LogUtils;
 import com.dataexpo.facedataexpo.Utils.ToastUtils;
 import com.dataexpo.facedataexpo.activity.set.BaseActivity;
+import com.dataexpo.facedataexpo.activity.set.ScreensaverActivity;
 import com.dataexpo.facedataexpo.callback.CameraDataCallback;
 import com.dataexpo.facedataexpo.callback.FaceDetectCallBack;
 import com.dataexpo.facedataexpo.camera.AutoTexturePreviewView;
 import com.dataexpo.facedataexpo.camera.CameraPreviewManager;
+import com.dataexpo.facedataexpo.listener.OnServeiceCallback;
 import com.dataexpo.facedataexpo.listener.SdkInitListener;
 import com.dataexpo.facedataexpo.manager.FaceSDKManager;
 import com.dataexpo.facedataexpo.manager.ImportFileManager;
@@ -53,6 +55,8 @@ import com.dataexpo.facedataexpo.view.PreviewTexture;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_NO_LIVE;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGBANDNIR_LIVE;
 import static com.dataexpo.facedataexpo.model.BaseConfig.TYPE_RGB_LIVE;
+import static com.dataexpo.facedataexpo.service.BgService.ACTION_HAVE_FACE;
+import static com.dataexpo.facedataexpo.service.BgService.ACTION_TIMEOUT;
 
 public class MainWindow extends BaseActivity implements View.OnClickListener, LoginDialog.OnDialogClickListener {
     private static final String TAG = MainWindow.class.getSimpleName();
@@ -61,8 +65,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 //    private static final int PERFER_HEIGH = 480;
     private static final int PREFER_WIDTH = 1280;
     private static final int PERFER_HEIGH = 720;
-
-    private Context mContext;
 
     // 关闭Debug 模式
     private AutoTexturePreviewView mAutoCameraPreviewView;
@@ -96,7 +98,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_show);
-        mContext = this;
 
         isConfigExit = ConfigUtils.isConfigExit();
         isInitConfig = ConfigUtils.initConfig();
@@ -138,7 +139,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
             public void onServiceConnected(ComponentName name, IBinder service) {
                 BgService.MsgBinder msgBinder = (BgService.MsgBinder) service;
                 MainApplication.getInstance().setService(msgBinder.getService());
-                msgBinder.getService().setCallback(onLongTime);
+                msgBinder.getService().setCallback(onServeiceCallback);
             }
 
             @Override
@@ -146,6 +147,25 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
             }
         };
+
+        onServeiceCallback = new OnServeiceCallback() {
+            @Override
+            public void onCallback(int action) {
+                if (action == ACTION_TIMEOUT) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "onServeiceCallback " + MainWindow.this.hasWindowFocus());
+
+                            startActivity(new Intent(mContext, ScreensaverActivity.class));
+
+                            Toast.makeText(mContext, "this is on long ting", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        };
+
         //startService(new Intent(getApplicationContext(), BgService.class));
         bindService(new Intent(getApplicationContext(), BgService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
@@ -236,6 +256,9 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         // 活体状态
         mLiveType = SingleBaseConfig.getBaseConfig().getType();
         startTestCloseDebugRegisterFunction();
+        if (MainApplication.getInstance().getService() != null) {
+            MainApplication.getInstance().getService().setCallback(onServeiceCallback);
+        }
     }
 
     private void startTestCloseDebugRegisterFunction() {
@@ -427,6 +450,11 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                     return;
                 } else {
                     if (mLiveType == 1) {
+                        //当检测到人脸时关闭屏保，显示人脸识别界面
+                        if (MainApplication.getInstance().getService() != null) {
+                            MainApplication.getInstance().getService().touch();
+                        }
+
                         User user = livenessModel.getUser();
                         if (user == null) {
                             mTrackText.setVisibility(View.VISIBLE);

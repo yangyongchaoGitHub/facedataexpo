@@ -3,8 +3,10 @@ package com.dataexpo.facedataexpo.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.idl.main.facesdk.FaceAuth;
 import com.dataexpo.facedataexpo.R;
@@ -13,8 +15,14 @@ import com.dataexpo.facedataexpo.activity.set.FaceLivenessThresholdActivity;
 import com.dataexpo.facedataexpo.activity.set.FaceLivinessType;
 import com.dataexpo.facedataexpo.activity.set.MinFaceActivity;
 import com.dataexpo.facedataexpo.activity.set.RecognizeModleThresholdActivity;
+import com.dataexpo.facedataexpo.activity.set.ScreensaverActivity;
 import com.dataexpo.facedataexpo.activity.set.SettingMainActivity;
+import com.dataexpo.facedataexpo.listener.OnServeiceCallback;
 import com.dataexpo.facedataexpo.model.SingleBaseConfig;
+import com.dataexpo.facedataexpo.service.BgService;
+import com.dataexpo.facedataexpo.service.MainApplication;
+
+import static com.dataexpo.facedataexpo.service.BgService.ACTION_TIMEOUT;
 
 public class BasicSetActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = BasicSetActivity.class.getSimpleName();
@@ -34,12 +42,30 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
         mContext = this;
         setContentView(R.layout.activity_basicset);
         initView();
+
+        onServeiceCallback = new OnServeiceCallback() {
+            @Override
+            public void onCallback(int action) {
+                if (action == ACTION_TIMEOUT) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                            //startActivity(new Intent(mContext, ScreensaverActivity.class));
+                        }
+                    });
+                }
+            }
+        };
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         initData();
+        if (MainApplication.getInstance().getService() != null) {
+            MainApplication.getInstance().getService().setCallback(onServeiceCallback);
+        }
     }
 
     private void initData() {
@@ -133,5 +159,15 @@ public class BasicSetActivity extends BaseActivity implements View.OnClickListen
                 break;
                 default:
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }
