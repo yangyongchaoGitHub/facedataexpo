@@ -255,6 +255,14 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         super.onResume();
         // 活体状态
         mLiveType = SingleBaseConfig.getBaseConfig().getType();
+
+        if (mLiveType == TYPE_NO_LIVE || mLiveType == TYPE_RGB_LIVE) {
+            //关灯
+            FileUtils.setLedBrightness("0");
+        } else {
+            //开灯
+            FileUtils.setLedBrightness("50");
+        }
         startTestCloseDebugRegisterFunction();
         if (MainApplication.getInstance().getService() != null) {
             MainApplication.getInstance().getService().setCallback(onServeiceCallback);
@@ -262,7 +270,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     }
 
     private void startTestCloseDebugRegisterFunction() {
-        // TODO ： 临时放置
         CameraPreviewManager.getInstance().setCameraFacing(CameraPreviewManager.CAMERA_USB);
         CameraPreviewManager.getInstance().startPreview(mContext, mAutoCameraPreviewView,
                 PREFER_WIDTH, PERFER_HEIGH, new CameraDataCallback() {
@@ -273,12 +280,11 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                     }
                 });
 
-        if (mLiveType == TYPE_NO_LIVE ||
-                mLiveType == TYPE_RGB_LIVE) {
-
-        } else if (mLiveType == TYPE_RGBANDNIR_LIVE) {
-            mCamera_ir = Camera.open(1);
-            pt_ir.setCamera(mCamera_ir, PREFER_WIDTH, PERFER_HEIGH);
+        if (mLiveType == TYPE_RGBANDNIR_LIVE) {
+            if (mCamera_ir == null) {
+                mCamera_ir = Camera.open(1);
+                pt_ir.setCamera(mCamera_ir, PREFER_WIDTH, PERFER_HEIGH);
+            }
             mCamera_ir.setPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] data, Camera camera) {
@@ -302,13 +308,6 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
     protected void onPause() {
         Log.i(TAG, "onPause");
         super.onPause();
-        if (mCamera_ir != null) {
-            mCamera_ir.setPreviewCallback(null);
-            mCamera_ir.stopPreview();
-            //pt_ir.release();
-            mCamera_ir.release();
-            mCamera_ir = null;
-        }
     }
 
     private void dealRgb(byte[] data, int width, int height) {
@@ -350,8 +349,9 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
 
     private synchronized void checkData() {
         if (rgbData != null && irData != null) {
-            FaceSDKManager.getInstance().onDetectCheck(rgbData, irData, null, PERFER_HEIGH,
-                    PREFER_WIDTH, TYPE_RGBANDNIR_LIVE, new FaceDetectCallBack() {
+            //FaceSDKManager.getInstance().onDetectRgbNir(rgbData, irData, null, PERFER_HEIGH, PERFER_HEIGH, TYPE_RGBANDNIR_LIVE, 3,
+            FaceSDKManager.getInstance().onDetectCheck(rgbData, irData, null, PERFER_HEIGH, PREFER_WIDTH, TYPE_RGBANDNIR_LIVE,
+                    new FaceDetectCallBack() {
                         @Override
                         public void onFaceDetectCallback(LivenessModel livenessModel) {
                             checkResult(livenessModel);
@@ -360,6 +360,7 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                         @Override
                         public void onTip(int code, String msg) {
                             //displayTip(1,msg);
+                            Log.i(TAG, "code: " + code + " " + msg);
                         }
 
                         @Override
@@ -383,6 +384,12 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                     info_rl.setVisibility(View.GONE);
                     return;
                 }
+
+                //当检测到人脸时关闭屏保，显示人脸识别界面
+                if (MainApplication.getInstance().getService() != null) {
+                    MainApplication.getInstance().getService().touch();
+                }
+
 //                BDFaceImageInstance image = livenessModel.getBdFaceImageInstance();
 //                if (image != null) {
 //                    mFaceDetectImageView.setImageBitmap(BitmapUtils.getInstaceBmp(image));
@@ -449,12 +456,12 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
                     info_rl.setVisibility(View.GONE);
                     return;
                 } else {
-                    if (mLiveType == 1) {
-                        //当检测到人脸时关闭屏保，显示人脸识别界面
-                        if (MainApplication.getInstance().getService() != null) {
-                            MainApplication.getInstance().getService().touch();
-                        }
+                    //当检测到人脸时关闭屏保，显示人脸识别界面
+                    if (MainApplication.getInstance().getService() != null) {
+                        MainApplication.getInstance().getService().touch();
+                    }
 
+                    if (mLiveType == 1) {
                         User user = livenessModel.getUser();
                         if (user == null) {
                             mTrackText.setVisibility(View.VISIBLE);
@@ -585,7 +592,14 @@ public class MainWindow extends BaseActivity implements View.OnClickListener, Lo
         super.onDestroy();
         CameraPreviewManager.getInstance().stopPreview();
         ImportFileManager.getInstance().release();
-        //unbindService(mConnection);
+        if (mCamera_ir != null) {
+            mCamera_ir.setPreviewCallback(null);
+            mCamera_ir.stopPreview();
+            //pt_ir.release();
+            mCamera_ir.release();
+            mCamera_ir = null;
+        }
+        unbindService(mConnection);
     }
 
     @Override

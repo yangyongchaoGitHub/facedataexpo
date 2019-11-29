@@ -14,6 +14,7 @@ import java.awt.font.TextAttribute;
 
 import static com.dataexpo.facedataexpo.service.BgService.ACTION_HAVE_FACE;
 import static com.dataexpo.facedataexpo.service.BgService.ACTION_TIMEOUT;
+import static com.dataexpo.facedataexpo.service.BgService.STATUS_SCREENSAVE;
 
 public class ScreensaverActivity extends BaseActivity implements View.OnClickListener {
     @Override
@@ -44,7 +45,11 @@ public class ScreensaverActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         if (MainApplication.getInstance().getService() != null) {
-            MainApplication.getInstance().getService().setCallback(onServeiceCallback);
+            if (MainApplication.getInstance().getService().getmScreenStatus() != STATUS_SCREENSAVE) {
+                finish();
+            } else {
+                MainApplication.getInstance().getService().setCallback(onServeiceCallback);
+            }
         }
         super.onResume();
     }

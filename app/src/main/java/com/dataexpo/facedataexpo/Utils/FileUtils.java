@@ -42,6 +42,21 @@ public class FileUtils {
         return result.toString();
     }
 
+    public static boolean setLedBrightness(String rn) {
+        String path = "/sys/class/leds/wled/brightness";
+        File file = new File(path);
+        if (file.exists()) {
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(rn.getBytes("utf-8"));
+                fileOutputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 
     /**
      * 写入TXT文件

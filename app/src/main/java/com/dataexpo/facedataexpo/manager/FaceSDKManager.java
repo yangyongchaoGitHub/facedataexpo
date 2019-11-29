@@ -282,6 +282,100 @@ public class FaceSDKManager {
     }
 
     /**
+     * 检测-活体-特征- 全流程
+     *
+     * @param rgbData            可见光YUV 数据流
+     * @param nirData            红外YUV 数据流
+     * @param depthData          深度depth 数据流
+     * @param srcHeight          可见光YUV 数据流-高度
+     * @param srcWidth           可见光YUV 数据流-宽度
+     * @param liveCheckMode      活体检测模式【不使用活体：1】；【RGB活体：2】；【RGB+NIR活体：3】；【RGB+Depth活体：4】
+     * @param featureCheckMode   特征抽取模式【不提取特征：1】；【提取特征：2】；【提取特征+1：N检索：3】；
+     * @param faceDetectCallBack
+     */
+    public void onDetectRgbNir(final byte[] rgbData,
+                              final byte[] nirData,
+                              final byte[] depthData,
+                              final int srcHeight,
+                              final int srcWidth,
+                              final int liveCheckMode,
+                              final int featureCheckMode,
+                              final FaceDetectCallBack faceDetectCallBack) {
+
+        if (future != null && !future.isDone()) {
+            return;
+        }
+
+        future = es.submit(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "rgb: " + rgbData + " nir " + nirData);
+
+                long startTime = System.currentTimeMillis();
+                // 创建检测结果存储数据
+                LivenessModel livenessModel = new LivenessModel();
+                // 创建检测对象，如果原始数据YUV，转为算法检测的图片BGR
+                // TODO: 用户调整旋转角度和是否镜像，手机和开发版需要动态适配
+                BDFaceImageInstance rgbInstance = new BDFaceImageInstance(rgbData, srcHeight,
+                        srcWidth, BDFaceSDKCommon.BDFaceImageType.BDFACE_IMAGE_TYPE_YUV_420,
+                        SingleBaseConfig.getBaseConfig().getDetectDirection(),
+                        SingleBaseConfig.getBaseConfig().getMirrorRGB());
+
+                // TODO: getImage() 获取送检图片,如果检测数据有问题，可以通过image view 展示送检图片
+                livenessModel.setBdFaceImageInstance(rgbInstance.getImage());
+
+                // 检查函数调用，返回检测结果
+                long startDetectTime = System.currentTimeMillis();
+                FaceInfo[] faceInfos = faceDetect.track(BDFaceSDKCommon.DetectType.DETECT_VIS, rgbInstance);
+
+                livenessModel.setRgbDetectDuration(System.currentTimeMillis() - startDetectTime);
+                //LogUtils.e(TIME_TAG, "detect vis time = " + livenessModel.getRgbDetectDuration());
+
+
+
+                // 检测结果判断
+                if (faceInfos != null && faceInfos.length > 0) {
+                    livenessModel.setTrackFaceInfo(faceInfos);
+                    livenessModel.setFaceInfo(faceInfos[0]);
+                    livenessModel.setLandmarks(faceInfos[0].landmarks);
+                    if (faceDetectCallBack != null) {
+                        faceDetectCallBack.onFaceDetectDarwCallback(livenessModel);
+                        faceDetectCallBack.onTip(3, "rgb have face");
+                    }
+                    Log.i(TAG, "活体检测1  ");
+                    // 活体检测
+                    //if (onQualityCheck(livenessModel, faceDetectCallBack)) {
+                        onLivenessCheck(rgbInstance, nirData, depthData, srcHeight,
+                                srcWidth, livenessModel.getLandmarks(),
+                                livenessModel, startTime, liveCheckMode, featureCheckMode, faceDetectCallBack);
+                    //}
+                } else {
+                    if (faceDetectCallBack != null) {
+                        faceDetectCallBack.onTip(2, "rgb no face!!!");
+                    }
+
+                    Log.i(TAG, "活体检测2  ");
+                    onLivenessCheck(rgbInstance, nirData, depthData, srcHeight,
+                            srcWidth, livenessModel.getLandmarks(),
+                            livenessModel, startTime, liveCheckMode, featureCheckMode, faceDetectCallBack);
+                }
+
+
+//                if () {
+//
+//                    if (faceDetectCallBack != null) {
+//                        faceDetectCallBack.onFaceDetectCallback(null);
+//                        faceDetectCallBack.onFaceDetectDarwCallback(null);
+//                        faceDetectCallBack.onTip(0, "未检测到人脸");
+//                    }
+//                }
+                // 流程结束销毁图片，开始下一帧图片检测，否着内存泄露
+                rgbInstance.destory();
+            }
+        });
+    }
+
+    /**
      * 检测-活体-特征-人脸检索流程
      *
      * @param rgbData            可见光YUV 数据流
@@ -386,7 +480,6 @@ public class FaceSDKManager {
 
                 float depthScore = -1;
                 if (liveCheckMode == 4 && depthData != null) {
-
                     // TODO: 用户调整旋转角度和是否镜像，适配Atlas 镜头，目前宽和高400*640，其他摄像头需要动态调整,人脸72 个关键点x 坐标向左移动80个像素点
 
                     float[] depthLandmark = new float[landmark.length];
